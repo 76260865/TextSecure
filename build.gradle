@@ -26,8 +26,8 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.android.gcm:gcm-client:1.0.2'
     compile 'se.emilsjolander:stickylistheaders:2.2.0'
-
     compile project(':library')
+    compile files('libs/Baidu-Frontia-Android-2.0.6.jar')
 }
 
 dependencyVerification {

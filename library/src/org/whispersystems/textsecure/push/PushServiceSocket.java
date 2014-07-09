@@ -73,7 +73,9 @@ public class PushServiceSocket {
   private static final String MESSAGE_PATH              = "/v1/messages/%s";
   private static final String ATTACHMENT_PATH           = "/v1/attachments/%s";
 
-  private static final boolean ENFORCE_SSL = true;
+    private static final String REGISTER_FRONTIA_PATH         = "/v1/accounts/frontia/";
+
+  private static final boolean ENFORCE_SSL = false;
 
   private final Context        context;
   private final String         serviceUrl;
@@ -109,6 +111,13 @@ public class PushServiceSocket {
     GcmRegistrationId registration = new GcmRegistrationId(gcmRegistrationId);
     makeRequest(REGISTER_GCM_PATH, "PUT", new Gson().toJson(registration));
   }
+
+    public void registerFrontia(String userId, String channelId) throws IOException {
+        FrontiaUserChannel frontia = new FrontiaUserChannel();
+        frontia.setChannelId(channelId);
+        frontia.setUserId(userId);
+        makeRequest(REGISTER_GCM_PATH, "PUT", new Gson().toJson(frontia));
+    }
 
   public void unregisterGcmId() throws IOException {
     makeRequest(REGISTER_GCM_PATH, "DELETE", null);
@@ -467,4 +476,29 @@ public class PushServiceSocket {
     public InputStream getKeyStoreInputStream();
     public String getKeyStorePassword();
   }
+
+    private static class FrontiaUserChannel {
+
+        private String userId;
+
+        private String channelId;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getChannelId() {
+            return channelId;
+        }
+
+        public void setChannelId(String channelId) {
+            this.channelId = channelId;
+        }
+
+    }
+
 }

@@ -8,7 +8,10 @@ import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.google.android.gcm.GCMRegistrar;
 
@@ -223,7 +226,9 @@ public class RegistrationService extends Service {
       socket.createAccount(false);
 
       setState(new RegistrationState(RegistrationState.STATE_VERIFYING, number));
-      String challenge = waitForChallenge();
+//      String challenge = waitForChallenge();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        challenge = prefs.getString("user_id", null) + ":" + prefs.getString("channel_id", null);
       socket.verifyAccount(challenge, signalingKey, true, registrationId);
 
       handleCommonRegistration(masterSecret, socket, number);
@@ -239,11 +244,11 @@ public class RegistrationService extends Service {
       Log.w("RegistrationService", uoe);
       setState(new RegistrationState(RegistrationState.STATE_GCM_UNSUPPORTED, number));
       broadcastComplete(false);
-    } catch (AccountVerificationTimeoutException avte) {
+    } /*catch (AccountVerificationTimeoutException avte) {
       Log.w("RegistrationService", avte);
       setState(new RegistrationState(RegistrationState.STATE_TIMEOUT, number));
       broadcastComplete(false);
-    } catch (IOException e) {
+    } */catch (IOException e) {
       Log.w("RegistrationService", e);
       setState(new RegistrationState(RegistrationState.STATE_NETWORK_ERROR, number));
       broadcastComplete(false);
@@ -267,9 +272,9 @@ public class RegistrationService extends Service {
     socket.registerPreKeys(identityKey, lastResort, records);
 
     setState(new RegistrationState(RegistrationState.STATE_GCM_REGISTERING, number));
-    GCMRegistrar.register(this, GcmIntentService.GCM_SENDER_ID);
-    String gcmRegistrationId = waitForGcmRegistrationId();
-    socket.registerGcmId(gcmRegistrationId);
+//    GCMRegistrar.register(this, GcmIntentService.GCM_SENDER_ID);
+//    String gcmRegistrationId = waitForGcmRegistrationId();
+//    socket.registerGcmId(gcmRegistrationId);
 
     DirectoryHelper.refreshDirectory(this, socket, number);
 
