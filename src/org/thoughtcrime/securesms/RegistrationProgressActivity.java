@@ -100,13 +100,13 @@ public class RegistrationProgressActivity extends SherlockActivity {
     initializeResources();
     initializeLinks();
     initializeServiceBinding();
-      bindFrontiaService();
+    //bindFrontiaService();
   }
 
-    private void bindFrontiaService() {
+    /*private void bindFrontiaService() {
         PushManager.startWork(getApplicationContext(),
                 PushConstants.LOGIN_TYPE_API_KEY, "y2CzhlKDrct8dbjKP2DFpHeo");
-    }
+    }*/
   @Override
   public void onDestroy() {
     super.onDestroy();
