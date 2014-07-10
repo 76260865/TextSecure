@@ -344,12 +344,13 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredSherlockPr
           PushServiceSocket socket  = PushServiceSocketFactory.create(context);
 
           socket.unregisterGcmId();
-          GCMRegistrar.unregister(context);
+            // commented ny wei.he for not using GCM to push notification
+//          GCMRegistrar.unregister(context);
           return SUCCESS;
-        } catch (AuthorizationFailedException afe) {
+        } /*catch (AuthorizationFailedException afe) {
           Log.w("ApplicationPreferencesActivity", afe);
           return SUCCESS;
-        } catch (IOException ioe) {
+        } */catch (IOException ioe) {
           Log.w("ApplicationPreferencesActivity", ioe);
           return NETWORK_ERROR;
         }
