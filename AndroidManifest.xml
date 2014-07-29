@@ -334,7 +334,9 @@
         <service android:name="com.baidu.android.pushservice.PushService"
             android:exported="true"
             android:process=":bdservice_v1" />
-
+            <intent-filter >
+                <action android:name="com.baidu.android.pushservice.action.PUSH_SERVICE"/>
+            </intent-filter>
         <receiver
             android:name="com.baidu.frontia.module.deeplink.db.DLDataPushReceiver">
             <intent-filter>

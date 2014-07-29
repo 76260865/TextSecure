@@ -18,8 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.google.android.gcm.GCMRegistrar;
 import com.google.i18n.phonenumbers.AsYouTypeFormatter;
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -63,14 +61,6 @@ public class RegistrationActivity extends SherlockActivity {
     initializeResources();
     initializeSpinner();
     initializeNumber();
-
-    //update baidu push services binding by realtian
-    BindingPushServices();
-  }
-
-  private void BindingPushServices() {
-	  PushManager.startWork(getApplicationContext(),
-              PushConstants.LOGIN_TYPE_API_KEY, "y2CzhlKDrct8dbjKP2DFpHeo");
   }
 
   @Override
