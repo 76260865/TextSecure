@@ -329,6 +329,11 @@
   <string name="conversation_activity__type_message"><small>发送信息</small></string>
   <string name="conversation_activity__send">发送</string>
   <string name="conversation_activity__remove">删除</string>
+    <string name="conversation_activity__type_message_push">发送安全消息</string>
+    <string name="conversation_activity__type_message_sms_secure">发送安全短信</string>
+    <string name="conversation_activity__type_message_sms_insecure">发送不安全短信</string>
+    <string name="conversation_activity__type_message_mms_secure">发送安全彩信</string>
+    <string name="conversation_activity__type_message_mms_insecure">发送不安全彩信</string>
   <!--conversation_item-->
   <string name="conversation_item__mms_image_description">媒体信息</string>
   <string name="conversation_item__play_button_description">播放按钮</string>
@@ -582,6 +587,11 @@
   <string name="push_directory__menu_refresh">刷新联系人列表</string>
   <!--conversation_button_context-->
   <string name="conversation_button_context__menu_send_unencrypted">发送未加密</string>
+    <string name="conversation_button_context__send_textsecure_message">发送安全消息</string>
+    <string name="conversation_button_context__send_secure_sms">发送安全短信</string>
+    <string name="conversation_button_context__send_insecure_sms">发送不安全短信</string>
+    <string name="conversation_button_context__send_secure_mms">发送安全彩信</string>
+    <string name="conversation_button_context__send_insecure_mms">发送不安全彩信</string>
   <!--conversation_callable-->
   <string name="conversation_callable__menu_call">呼叫</string>
   <!--conversation_context-->

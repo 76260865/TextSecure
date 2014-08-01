@@ -328,7 +328,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED"/>
                 <data android:scheme="package" />
-            </intent-filter>
+            </intent-filter>y
         </receiver>
 
         <service android:name="com.baidu.android.pushservice.PushService"
@@ -343,11 +343,12 @@
                 <action android:name="com.baidu.android.pushservice.action.SDK_MESSAGE" />
                 <action android:name="com.baidu.android.pushservice.action.sdk.RECEIVE" />
             </intent-filter>
-            <intent-filter>
+            <!--Comment by wei.he for classnotfoundexception-->
+            <!--intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED"/>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <data android:scheme="package" />
-            </intent-filter>
+            </intent-filter-->
         </receiver>
         <receiver android:name=".service.MyPushMessageReceiver">
             <intent-filter>
