@@ -302,7 +302,9 @@ public class PushServiceSocket {
     throws IOException
   {
     URL                uploadUrl  = new URL(url);
-    HttpsURLConnection connection = (HttpsURLConnection) uploadUrl.openConnection();
+      //Modified by wei.he for not using https connection in our server
+//    HttpsURLConnection connection = (HttpsURLConnection) uploadUrl.openConnection();
+      HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
     connection.setDoOutput(true);
     connection.setRequestMethod(method);
     connection.setRequestProperty("Content-Type", "application/octet-stream");
@@ -313,7 +315,9 @@ public class PushServiceSocket {
       out.write(data);
       out.close();
 
-      if (connection.getResponseCode() != 200) {
+//Comment by wei.he for our swift server is return 201 rather than amazon s3
+//      if (connection.getResponseCode() != 200) {
+        if (connection.getResponseCode() != 201) {
         throw new IOException("Bad response: " + connection.getResponseCode() + " " + connection.getResponseMessage());
       }
     } finally {
