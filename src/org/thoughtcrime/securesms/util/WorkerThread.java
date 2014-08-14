@@ -17,10 +17,14 @@
 package org.thoughtcrime.securesms.util;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WorkerThread extends Thread {
 
   private final List<Runnable> workQueue;
+
+    private ExecutorService executorService = Executors.newCachedThreadPool();
 
   public WorkerThread(List<Runnable> workQueue, String name) {
     super(name);
@@ -43,6 +47,7 @@ public class WorkerThread extends Thread {
   @Override
   public void run() {
     for (;;)
-      getWork().run();
+        executorService.submit(getWork());
+//      getWork().run();
   }
 }
