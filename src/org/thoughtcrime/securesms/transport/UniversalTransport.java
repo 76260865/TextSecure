@@ -79,8 +79,9 @@ public class UniversalTransport {
     try {
       Recipient recipient = message.getIndividualRecipient();
       String    number    = Util.canonicalizeNumber(context, recipient.getNumber());
-
-      if (isPushTransport(number) && !message.isKeyExchange()) {
+ boolean ispush = isPushTransport(number);
+Log.d("UniversalTransport","ispush:"+ispush);
+      if (ispush && !message.isKeyExchange()) {
         boolean isSmsFallbackSupported = isSmsFallbackSupported(number);
 
         try {
@@ -307,7 +308,7 @@ public class UniversalTransport {
     if (GroupUtil.isEncodedGroup(destination)) {
       return true;
     }
-
+Log.d("UniversalTransport","destination="+destination);
     Directory directory = Directory.getInstance(context);
 
     try {
@@ -316,9 +317,11 @@ public class UniversalTransport {
       try {
         PushServiceSocket   socket         = PushServiceSocketFactory.create(context);
         String              contactToken   = DirectoryUtil.getDirectoryServerToken(destination);
+Log.d("UniversalTransport","contactToken="+contactToken);
         ContactTokenDetails registeredUser = socket.getContactTokenDetails(contactToken);
 
         if (registeredUser == null) {
+Log.d("UniversalTransport","registeredUser==null");
           registeredUser = new ContactTokenDetails();
           registeredUser.setNumber(destination);
           directory.setNumber(registeredUser, false);
