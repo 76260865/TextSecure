@@ -13,8 +13,6 @@ import org.thoughtcrime.securesms.service.ApplicationMigrationService;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.igexin.sdk.PushConsts;
 import com.igexin.sdk.Tag;
 
@@ -50,14 +48,8 @@ public class RoutingActivity extends PassphraseRequiredSherlockActivity {
     this.canceledResult = false;
     this.isVisible      = true;
     super.onResume();
-//      BindingPushServices();
     bindingGeTuiPushService();
   }
-
-    private void BindingPushServices() {
-        PushManager.startWork(getApplicationContext(),
-            PushConstants.LOGIN_TYPE_API_KEY, "y2CzhlKDrct8dbjKP2DFpHeo");
-    }
 
     private void bindingGeTuiPushService() {
         android.util.Log.d(TAG, "initializing sdk...");

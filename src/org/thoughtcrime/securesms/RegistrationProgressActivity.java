@@ -29,8 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 
 import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.service.RegistrationService;
@@ -100,13 +98,8 @@ public class RegistrationProgressActivity extends SherlockActivity {
     initializeResources();
     initializeLinks();
     initializeServiceBinding();
-    //bindFrontiaService();
   }
 
-    /*private void bindFrontiaService() {
-        PushManager.startWork(getApplicationContext(),
-                PushConstants.LOGIN_TYPE_API_KEY, "y2CzhlKDrct8dbjKP2DFpHeo");
-    }*/
   @Override
   public void onDestroy() {
     super.onDestroy();

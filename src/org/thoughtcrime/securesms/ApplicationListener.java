@@ -20,7 +20,6 @@ import android.app.Application;
 
 import org.thoughtcrime.securesms.crypto.PRNGFixes;
 
-import com.baidu.frontia.FrontiaApplication;
 
 /**
  * Will be called once when the TextSecure process is created.
@@ -29,12 +28,11 @@ import com.baidu.frontia.FrontiaApplication;
  *
  * @author Moxie Marlinspike
  */
-public class ApplicationListener extends FrontiaApplication {
+public class ApplicationListener extends Application {
 
   @Override
   public void onCreate() {
     PRNGFixes.apply();
-      FrontiaApplication.initFrontiaApplication(this);
   }
 
 }
