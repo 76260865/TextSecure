@@ -75,6 +75,8 @@ public class PushServiceSocket {
 
     private static final String REGISTER_FRONTIA_PATH         = "/v1/accounts/frontia/";
 
+    private static final String UPDATE_GETUI_CLIENTID_PATH         = "/v1/accounts/getui/";
+
   private static final boolean ENFORCE_SSL = false;
 
   private final Context        context;
@@ -117,6 +119,12 @@ public class PushServiceSocket {
         frontia.setChannelId(channelId);
         frontia.setUserId(userId);
         makeRequest(REGISTER_GCM_PATH, "PUT", new Gson().toJson(frontia));
+    }
+
+    public void updateGetuiClientId(String clientId) throws IOException {
+        GetuiModel getui = new GetuiModel();
+        getui.setGetuiclientid(clientId);
+        makeRequest(UPDATE_GETUI_CLIENTID_PATH, "PUT", new Gson().toJson(getui));
     }
 
   public void unregisterGcmId() throws IOException {
@@ -191,7 +199,7 @@ public class PushServiceSocket {
   public PreKeyEntity getPreKey(PushAddress destination) throws IOException {
     try {
       String path = String.format(PREKEY_DEVICE_PATH, destination.getNumber(),
-                                  String.valueOf(destination.getDeviceId()));
+              String.valueOf(destination.getDeviceId()));
 
       if (!Util.isEmpty(destination.getRelay())) {
         path = path + "?relay=" + destination.getRelay();
@@ -503,6 +511,18 @@ public class PushServiceSocket {
             this.channelId = channelId;
         }
 
+    }
+
+    private static class GetuiModel {
+        private String clientId;
+
+        public String getGetuiclientid() {
+            return clientId;
+        }
+
+        public void setGetuiclientid(String clientId) {
+            this.clientId = clientId;
+        }
     }
 
 }

@@ -34,8 +34,11 @@ import org.thoughtcrime.securesms.crypto.MasterSecretUtil;
 import org.thoughtcrime.securesms.database.CanonicalSessionMigrator;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.thoughtcrime.securesms.util.WorkerThread;
+import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
+import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +64,7 @@ public class SendReceiveService extends Service {
   public static final String DECRYPTED_PUSH_ACTION            = "org.thoughtcrime.securesms.SendReceiveService.DECRYPTED_PUSH_ACTION";
   public static final String DOWNLOAD_PUSH_ACTION             = "org.thoughtcrime.securesms.SendReceiveService.DOWNLOAD_PUSH_ACTION";
   public static final String DOWNLOAD_AVATAR_ACTION           = "org.thoughtcrime.securesms.SendReceiveService.DOWNLOAD_AVATAR_ACTION";
+    public static final String UPDATE_CLIENTID_ACTION           = "org.thoughtcrime.securesms.SendReceiveService.UPDATE_CLIENTID_ACTION";
 
   public static final String MASTER_SECRET_EXTRA = "master_secret";
 
@@ -73,6 +77,7 @@ public class SendReceiveService extends Service {
   private static final int RECEIVE_PUSH          = 6;
   private static final int DOWNLOAD_PUSH         = 7;
   private static final int DOWNLOAD_AVATAR       = 8;
+    private static final int UPDATE_CLIENTID       = 9;
 
   private ToastHandler        toastHandler;
   private SystemStateListener systemStateListener;
@@ -133,6 +138,8 @@ public class SendReceiveService extends Service {
       scheduleSecretRequiredIntent(DOWNLOAD_PUSH, intent);
     else if (action.equals(DOWNLOAD_AVATAR_ACTION))
       scheduleIntent(DOWNLOAD_AVATAR, intent);
+    else if (action.equals(UPDATE_CLIENTID_ACTION))
+        scheduleIntent(UPDATE_CLIENTID, intent);
     else
       Log.w("SendReceiveService", "Received intent with unknown action: " + intent.getAction());
   }
@@ -278,9 +285,20 @@ public class SendReceiveService extends Service {
       case RECEIVE_PUSH:         pushReceiver.process(masterSecret, intent);     return;
       case DOWNLOAD_PUSH:        pushDownloader.process(masterSecret, intent);   return;
       case DOWNLOAD_AVATAR:      avatarDownloader.process(masterSecret, intent); return;
+        //added by wei.he for the client id maybe change if the sdcard has been removed
+          case UPDATE_CLIENTID: updateClientId(intent);     return;
       }
     }
   }
+
+    private void updateClientId(Intent intent) {
+        PushServiceSocket socket = PushServiceSocketFactory.create(this);
+        try {
+            socket.updateGetuiClientId(intent.getStringExtra("client_id"));
+        } catch (IOException ex) {
+            android.util.Log.e("SendReceiveService", ex.getMessage());
+        }
+    }
 
   public class ToastHandler extends Handler {
     public void makeToast(String toast) {

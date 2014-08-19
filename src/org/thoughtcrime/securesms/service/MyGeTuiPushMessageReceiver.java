@@ -122,10 +122,14 @@ public class MyGeTuiPushMessageReceiver extends BroadcastReceiver {
 			Log.d(TAG, "Got cid:" + cid);
                         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 			String preClientId = sharedPreferences.getString("clientid","");
-			if (TextUtils.isEmpty(cid) && !cid.equals(preClientId)) {
-			   // TODO: update the client by push service socket or start the send recieve service
+			if (!TextUtils.isEmpty(preClientId) && !TextUtils.isEmpty(cid) && !preClientId.equals(cid)) {
+			    //update the client by push service socket or start the send recieve service
+                Intent service = new Intent(context, SendReceiveService.class);
+                service.setAction(SendReceiveService.UPDATE_CLIENTID_ACTION);
+                service.putExtra("client_id", cid);
+                context.startService(service);
 			}
-		        SharedPreferences.Editor editor = sharedPreferences.edit();
+		        SharedPreferences.Editor editor = sharedPreferences.edit()  ;
 		        editor.putString("clientid", cid);
                         editor.commit();
 
