@@ -43,14 +43,17 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 /**
  *
@@ -77,7 +80,7 @@ public class PushServiceSocket {
 
     private static final String UPDATE_GETUI_CLIENTID_PATH         = "/v1/accounts/getui/";
 
-  private static final boolean ENFORCE_SSL = false;
+  private static final boolean ENFORCE_SSL = true;
 
   private final Context        context;
   private final String         serviceUrl;
@@ -92,7 +95,9 @@ public class PushServiceSocket {
     this.serviceUrl    = serviceUrl;
     this.localNumber   = localNumber;
     this.password      = password;
-    this.trustManagers = initializeTrustManager(trustStore);
+      //Commet by Wei.he 2014-08-21
+//    this.trustManagers = initializeTrustManager(trustStore);
+      this.trustManagers = mTrustAllCerts;
   }
 
   public void createAccount(boolean voice) throws IOException {
@@ -411,7 +416,9 @@ public class PushServiceSocket {
 
       if (ENFORCE_SSL) {
         ((HttpsURLConnection)connection).setSSLSocketFactory(context.getSocketFactory());
-        ((HttpsURLConnection)connection).setHostnameVerifier(new StrictHostnameVerifier());
+          //Comment by Wei.He 2014-08-21
+//        ((HttpsURLConnection)connection).setHostnameVerifier(new StrictHostnameVerifier());
+          ((HttpsURLConnection)connection).setHostnameVerifier(DO_NOT_VERIFY);
       }
 
       connection.setRequestMethod(method);
@@ -430,6 +437,13 @@ public class PushServiceSocket {
       throw new AssertionError(e);
     }
   }
+
+    // Added by Wei.He for do not check for always verify the host - dont check for certificate
+    private static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+        public boolean verify(String hostname, javax.net.ssl.SSLSession session) {
+            return true;
+        }
+    };
 
   private String getAuthorizationHeader() {
     try {
@@ -460,6 +474,22 @@ public class PushServiceSocket {
       throw new AssertionError(ioe);
     }
   }
+
+    // Adde by Wei.He 2014-08-21
+    // Create a trust manager that does not validate certificate chains
+    // Android 采用X509的证书信息机制
+    TrustManager[] mTrustAllCerts = new TrustManager[]{new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[]{};
+        }
+
+        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        }
+        }
+    };
 
   private static class GcmRegistrationId {
     private String gcmRegistrationId;
