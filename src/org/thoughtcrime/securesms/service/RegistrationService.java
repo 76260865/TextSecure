@@ -228,7 +228,7 @@ public class RegistrationService extends Service {
       setState(new RegistrationState(RegistrationState.STATE_VERIFYING, number));
 //      String challenge = waitForChallenge();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        challenge = prefs.getString("user_id", null) + ":" + prefs.getString("channel_id", null);
+        challenge = prefs.getString("clientid", null);
       socket.verifyAccount(challenge, signalingKey, true, registrationId);
 
       handleCommonRegistration(masterSecret, socket, number);
