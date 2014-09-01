@@ -25,6 +25,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import org.thoughtcrime.securesms.contacts.ContactAccessor;
+import org.thoughtcrime.securesms.contacts.ContactsDatabase;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.ThreadDatabase;
 import org.thoughtcrime.securesms.recipients.Recipient;
@@ -38,6 +39,7 @@ import org.thoughtcrime.securesms.util.NumberUtil;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,6 +132,13 @@ public class NewConversationActivity extends PassphraseRequiredSherlockFragmentA
         contactsFragment.update();
       }
     });
+
+      //Added by Wei.He for update the push users sync
+      try {
+          ContactsDatabase.getInstance(this).refreshPushUsers();
+      } catch (IOException e) {
+          Log.e(TAG, e.getMessage());
+      }
   }
 
   private Recipients contactDataToRecipients(ContactData contactData) {

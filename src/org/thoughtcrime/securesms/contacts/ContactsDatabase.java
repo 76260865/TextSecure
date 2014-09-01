@@ -166,6 +166,24 @@ public class ContactsDatabase {
     return localCursor;
   }
 
+    //Added by Wei.He for update the push users sync
+    public void refreshPushUsers() throws IOException {
+        Log.d(TAG, "populating push users into virtual db.");
+        SQLiteDatabase localDb = dbHelper.getWritableDatabase();
+        Collection<ContactAccessor.ContactData> pushUsers = ContactAccessor.getInstance().getContactsWithPush(context);
+        for (ContactAccessor.ContactData user : pushUsers) {
+            ContentValues values = new ContentValues();
+            values.put(ID_COLUMN, user.id);
+            values.put(NAME_COLUMN, user.name);
+            values.put(NUMBER_TYPE_COLUMN, ContactsContract.CommonDataKinds.Phone.TYPE_CUSTOM);
+            values.put(LABEL_COLUMN, (String)null);
+            values.put(NUMBER_COLUMN, user.numbers.get(0).number);
+            values.put(TYPE_COLUMN, PUSH_TYPE);
+            localDb.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        }
+        Log.d(TAG, "finished populating push users.");
+    }
+
   private static class DatabaseOpenHelper extends SQLiteOpenHelper {
 
     private final Context        context;
@@ -181,7 +199,8 @@ public class ContactsDatabase {
             TYPE_COLUMN        + " INTEGER);";
 
     DatabaseOpenHelper(Context context) {
-      super(context, null, null, 1);
+        //Modified by Wei.He for naming the database
+      super(context, "contacts", null, 1);
       this.context = context;
     }
 
