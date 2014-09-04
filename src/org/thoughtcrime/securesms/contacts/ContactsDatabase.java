@@ -170,6 +170,7 @@ public class ContactsDatabase {
     public void refreshPushUsers() throws IOException {
         Log.d(TAG, "populating push users into virtual db.");
         SQLiteDatabase localDb = dbHelper.getWritableDatabase();
+        localDb.delete(TABLE_NAME, null, null);
         Collection<ContactAccessor.ContactData> pushUsers = ContactAccessor.getInstance().getContactsWithPush(context);
         for (ContactAccessor.ContactData user : pushUsers) {
             ContentValues values = new ContentValues();
