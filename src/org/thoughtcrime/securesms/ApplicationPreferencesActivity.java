@@ -45,7 +45,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.actionbarsherlock.view.MenuItem;
-import com.google.android.gcm.GCMRegistrar;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.thoughtcrime.securesms.components.OutgoingSmsPreference;
 import org.thoughtcrime.securesms.contacts.ContactAccessor;
@@ -346,6 +346,8 @@ public class ApplicationPreferencesActivity extends PassphraseRequiredSherlockPr
           socket.unregisterGcmId();
             // commented ny wei.he for not using GCM to push notification
 //          GCMRegistrar.unregister(context);
+//          GoogleCloudMessaging.getInstance(context).unregister();
+
           return SUCCESS;
         } /*catch (AuthorizationFailedException afe) {
           Log.w("ApplicationPreferencesActivity", afe);
