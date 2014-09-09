@@ -501,4 +501,10 @@ public class ConversationFragment extends SherlockListFragment
       return file;
     }
   }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ((ConversationAdapter)getListAdapter()).onDestroy();
+    }
 }

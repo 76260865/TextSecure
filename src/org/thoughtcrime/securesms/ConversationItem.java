@@ -24,7 +24,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Contacts.Intents;
@@ -48,7 +47,6 @@ import org.thoughtcrime.securesms.mms.SlideDeck;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.service.SendReceiveService;
 import org.thoughtcrime.securesms.util.DateUtils;
-import org.thoughtcrime.securesms.util.Dialogs;
 import org.thoughtcrime.securesms.util.Emoji;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.util.FutureTaskListener;
@@ -114,6 +112,15 @@ public class ConversationItem extends LinearLayout {
   private final ClickListener clickListener                             = new ClickListener();
   private final Handler handler                                         = new Handler();
   private final Context context;
+    //Added by Wei.he for playing the audio in our internal app
+    private MediaAttachmentClickListener mMediaAttachmentClickListener;
+    public void setMediaAttachmentClickListener(MediaAttachmentClickListener listener) {
+        mMediaAttachmentClickListener = listener;
+    }
+
+    public interface MediaAttachmentClickListener {
+        void onMediaAttachmentClick(Uri uri);
+    }
 
   public ConversationItem(Context context) {
     super(context);
@@ -443,25 +450,34 @@ public class ConversationItem extends LinearLayout {
 
     private void fireIntent() {
       Log.w(TAG, "Clicked: " + slide.getUri() + " , " + slide.getContentType());
-      Intent intent = new Intent(Intent.ACTION_VIEW);
-      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-      intent.setDataAndType(slide.getUri(), slide.getContentType());
-      context.startActivity(intent);
+        //Commented by Wei.He for displaying in our internal image viewer
+//      Intent intent = new Intent(Intent.ACTION_VIEW);
+//      intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//      intent.setDataAndType(slide.getUri(), slide.getContentType());
+        if (slide.getContentType().startsWith("audio") && mMediaAttachmentClickListener != null) {
+            mMediaAttachmentClickListener.onMediaAttachmentClick(slide.getUri());
+        } else {
+            Intent intent = new Intent(context, AttachmentViewerActivity.class);
+            intent.setDataAndType(slide.getUri(), slide.getContentType());
+            context.startActivity(intent);
+        }
     }
 
     public void onClick(View v) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(context);
-      builder.setTitle(R.string.ConversationItem_view_secure_media_question);
-      builder.setIcon(Dialogs.resolveIcon(context, R.attr.dialog_alert_icon));
-      builder.setCancelable(true);
-      builder.setMessage(R.string.ConversationItem_this_media_has_been_stored_in_an_encrypted_database_external_viewer_warning);
-      builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-        public void onClick(DialogInterface dialog, int which) {
-          fireIntent();
-        }
-      });
-      builder.setNegativeButton(R.string.no, null);
-      builder.show();
+        fireIntent();
+        //Commented by Wei.He for displaying in our internal image viewer
+//      AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//      builder.setTitle(R.string.ConversationItem_view_secure_media_question);
+//      builder.setIcon(Dialogs.resolveIcon(context, R.attr.dialog_alert_icon));
+//      builder.setCancelable(true);
+//      builder.setMessage(R.string.ConversationItem_this_media_has_been_stored_in_an_encrypted_database_external_viewer_warning);
+//      builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+//        public void onClick(DialogInterface dialog, int which) {
+//          fireIntent();
+//        }
+//      });
+//      builder.setNegativeButton(R.string.no, null);
+//      builder.show();
     }
   }
 

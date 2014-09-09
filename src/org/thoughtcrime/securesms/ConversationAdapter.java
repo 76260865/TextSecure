@@ -18,7 +18,10 @@ package org.thoughtcrime.securesms;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,7 @@ import org.thoughtcrime.securesms.database.SmsDatabase;
 import org.thoughtcrime.securesms.database.model.MessageRecord;
 import org.thoughtcrime.securesms.util.LRUCache;
 
+import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.util.Collections;
 import java.util.Map;
@@ -46,6 +50,7 @@ import java.util.Map;
  *
  */
 public class ConversationAdapter extends CursorAdapter implements AbsListView.RecyclerListener {
+    private static final String TAG = "ConversationAdapter";
 
   private static final int MAX_CACHE_SIZE = 40;
   private final Map<String,SoftReference<MessageRecord>> messageRecordCache =
@@ -62,6 +67,7 @@ public class ConversationAdapter extends CursorAdapter implements AbsListView.Re
   private final boolean pushDestination;
   private final LayoutInflater inflater;
 
+    private MediaPlayer mMediaPlayer;
   public ConversationAdapter(Context context, MasterSecret masterSecret,
                              Handler failedIconClickHandler, boolean groupThread, boolean pushDestination)
   {
@@ -75,13 +81,30 @@ public class ConversationAdapter extends CursorAdapter implements AbsListView.Re
   }
 
   @Override
-  public void bindView(View view, Context context, Cursor cursor) {
+  public void bindView(View view, final Context context, Cursor cursor) {
     ConversationItem item       = (ConversationItem)view;
     long id                     = cursor.getLong(cursor.getColumnIndexOrThrow(SmsDatabase.ID));
     String type                 = cursor.getString(cursor.getColumnIndexOrThrow(MmsSmsDatabase.TRANSPORT));
     MessageRecord messageRecord = getMessageRecord(id, cursor, type);
 
     item.set(masterSecret, messageRecord, failedIconClickHandler, groupThread, pushDestination);
+      //Added by Wei.he for playing the audio in our internal app
+      item.setMediaAttachmentClickListener(new ConversationItem.MediaAttachmentClickListener() {
+          public void onMediaAttachmentClick(Uri uri) {
+              Log.d("TAG", "onMediaAttachmentClick uri : " + uri);
+              if (mMediaPlayer == null) {
+                  mMediaPlayer = new MediaPlayer();
+              }
+              try {
+                  mMediaPlayer.reset();
+                  mMediaPlayer.setDataSource(context, uri);
+                  mMediaPlayer.prepare();
+                  mMediaPlayer.start();
+              } catch (IOException e) {
+                  Log.e(TAG, e.getMessage());
+              }
+          }
+      });
   }
 
   @Override
@@ -162,4 +185,11 @@ public class ConversationAdapter extends CursorAdapter implements AbsListView.Re
   public void onMovedToScrapHeap(View view) {
     ((ConversationItem)view).unbind();
   }
+
+    public void onDestroy() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
+    }
 }
