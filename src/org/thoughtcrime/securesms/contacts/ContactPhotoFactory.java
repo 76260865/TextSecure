@@ -7,12 +7,19 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.util.Log;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.LRUCache;
+import org.whispersystems.textsecure.push.ContactsInfo;
+import org.whispersystems.textsecure.push.PushServiceSocket;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
@@ -105,10 +112,28 @@ public class ContactPhotoFactory {
     localUserContactPhotoCache.remove(recipient.getContactUri());
   }
 
-  public static Bitmap getContactPhoto(Context context, Uri uri) {
-    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
-
+    //TODO refactor the code in the next week
+  public static Bitmap getContactPhoto(Context context, Uri uri, String ... number) {
     final Bitmap contactPhoto;
+      PushServiceSocket socket = PushServiceSocketFactory.create(context);
+      String phoneNumber = number[0].startsWith("+86") ? number[0] : "+86".concat(number[0]);
+      ContactsInfo contactsInfo = socket.getContactsInfo(phoneNumber);
+      Log.d("ContactPhotoFactory", "contactsInfo:" +contactsInfo + " number : " + phoneNumber);
+      if (contactsInfo != null && contactsInfo.getImageattachmentid () != null) {
+          try {
+              File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid ()) ;
+              FileInputStream fileInputStream = new FileInputStream(avatar);
+              if (avatar.exists() && avatar.length() > 0) {
+                  Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                  Log.d("ContactPhotoFactory", "get the contact photo from server");
+                  return bitmap;
+              }
+          } catch (IOException e) {
+              Log.w("ContactPhotoFactory", e.getMessage());
+          }
+      }
+
+    InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
     if (inputStream == null) contactPhoto = ContactPhotoFactory.getDefaultContactPhoto(context);
     else                     contactPhoto = BitmapFactory.decodeStream(inputStream);
 

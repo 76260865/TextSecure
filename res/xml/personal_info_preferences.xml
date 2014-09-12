@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <org.thoughtcrime.securesms.preferences.AvatarPreference
+        android:key="pref_avatar"
+        android:persistent="true"
+        android:summary=""
+        android:title="Avatar"
+        android:widgetLayout="@layout/preference_widget_personal_avatar" />
+    <org.thoughtcrime.securesms.preferences.TextItemPreference
+        android:key="pref_gender"
+        android:persistent="true"
+        android:summary=""
+        android:title="Gender"
+        android:widgetLayout="@layout/preference_widget_personal_info" />
+    <org.thoughtcrime.securesms.preferences.TextItemPreference
+        android:key="pref_age"
+        android:numeric="integer"
+        android:persistent="true"
+        android:summary=""
+        android:title="Age"
+        android:widgetLayout="@layout/preference_widget_personal_info" />
+    <org.thoughtcrime.securesms.preferences.TextItemPreference
+        android:key="pref_name"
+        android:persistent="true"
+        android:summary=""
+        android:title="Name"
+        android:widgetLayout="@layout/preference_widget_personal_info" />
+    <org.thoughtcrime.securesms.preferences.TextItemPreference
+        android:key="pref_signature"
+        android:persistent="true"
+        android:summary=""
+        android:title="Signature"
+        android:widgetLayout="@layout/preference_widget_personal_info" />
+</PreferenceScreen>

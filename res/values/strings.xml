@@ -867,6 +867,8 @@
     <string name="reminder_header_sms_import_text">TextSecure can copy your phone\'s SMS messages into its encrypted database.</string>
     <string name="reminder_header_push_title">Enable TextSecure messages?</string>
     <string name="reminder_header_push_text">Instant delivery, stronger privacy, and no SMS fees.</string>
+    <string name="registration_activity__your_avatar">Your Avatar</string>
     <!-- EOF -->
 
+    <string name="personal_info_activity__choose_image">Choose Image</string>
 </resources>

@@ -144,7 +144,7 @@ public class RecipientProvider {
       if (cursor != null && cursor.moveToFirst()) {
         Uri contactUri      = Contacts.getLookupUri(cursor.getLong(2), cursor.getString(1));
         Bitmap contactPhoto = ContactPhotoFactory.getContactPhoto(context, Uri.withAppendedPath(Contacts.CONTENT_URI,
-                                                                                                cursor.getLong(2)+""));
+                                                                                                cursor.getLong(2)+""), cursor.getString(3));
         return new RecipientDetails(cursor.getString(0), cursor.getString(3), contactUri, contactPhoto,
                                     BitmapUtil.getCircleCroppedBitmap(contactPhoto));
       }

@@ -5,6 +5,11 @@
           android:icon="?attr/menu_new_conversation_icon"
           android:showAsAction="always" />
 
+    <item android:title="personal info setting"
+        android:id="@+id/menu_personal_info_settings"
+        android:showAsAction="always"
+        android:icon="@drawable/ic_contact_picture" />
+
     <item android:title="@string/text_secure_normal__menu_new_group"
           android:id="@+id/menu_new_group"
           android:icon="@android:drawable/ic_menu_add" />

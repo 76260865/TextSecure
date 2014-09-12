@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <org.thoughtcrime.securesms.components.ForegroundImageView
+        android:id="@+id/contact_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginRight="10dp"
+        android:contentDescription="@string/conversation_item_received__contact_photo_description"
+        android:cropToPadding="true"
+        android:foregroundGravity="center"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_contact_picture" />
+
+</LinearLayout>

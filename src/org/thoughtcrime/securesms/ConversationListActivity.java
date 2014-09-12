@@ -120,10 +120,17 @@ public class ConversationListActivity extends PassphraseRequiredSherlockFragment
     case R.id.menu_mark_all_read:     handleMarkAllRead();            return true;
     case R.id.menu_import_export:     handleImportExport();           return true;
     case R.id.menu_my_identity:       handleMyIdentity();             return true;
+        case R.id.menu_personal_info_settings: handlePersonalInfoSetting(); return true;
     }
 
     return false;
   }
+
+
+    private void handlePersonalInfoSetting() {
+        Intent intent = new Intent(this, PersonalInfoActivity.class);
+        startActivity(intent);
+    }
 
   @Override
   public void onCreateConversation(long threadId, Recipients recipients, int distributionType) {

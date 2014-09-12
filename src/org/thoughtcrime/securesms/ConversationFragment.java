@@ -504,7 +504,10 @@ public class ConversationFragment extends SherlockListFragment
 
     @Override
     public void onDestroy() {
+        ConversationAdapter adapter = (ConversationAdapter)getListAdapter();
+        if (adapter != null) {
+            adapter.onDestroy();
+        }
         super.onDestroy();
-        ((ConversationAdapter)getListAdapter()).onDestroy();
     }
 }

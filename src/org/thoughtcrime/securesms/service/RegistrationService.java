@@ -17,6 +17,8 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.crypto.IdentityKeyUtil;
+import org.thoughtcrime.securesms.preferences.AvatarPreference;
+import org.thoughtcrime.securesms.preferences.TextItemPreference;
 import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.util.DirectoryHelper;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
@@ -53,10 +55,12 @@ import java.util.concurrent.Executors;
  */
 
 public class RegistrationService extends Service {
+    private static final String TAG = "RegistrationService";
 
   public static final String REGISTER_NUMBER_ACTION = "org.thoughtcrime.securesms.RegistrationService.REGISTER_NUMBER";
   public static final String VOICE_REQUESTED_ACTION = "org.thoughtcrime.securesms.RegistrationService.VOICE_REQUESTED";
   public static final String VOICE_REGISTER_ACTION  = "org.thoughtcrime.securesms.RegistrationService.VOICE_REGISTER";
+    public static final String UPDATE_CONTACTS_INFO_ACTION = "org.thoughtcrime.securesms.RegistrationService.UPDATE_PERSONAL_INFO_ACTION";
 
   public static final String NOTIFICATION_TITLE     = "org.thoughtcrime.securesms.NOTIFICATION_TITLE";
   public static final String NOTIFICATION_TEXT      = "org.thoughtcrime.securesms.NOTIFICATION_TEXT";
@@ -87,6 +91,8 @@ public class RegistrationService extends Service {
           if      (REGISTER_NUMBER_ACTION.equals(intent.getAction())) handleSmsRegistrationIntent(intent);
           else if (VOICE_REQUESTED_ACTION.equals(intent.getAction())) handleVoiceRequestedIntent(intent);
           else if (VOICE_REGISTER_ACTION.equals(intent.getAction()))  handleVoiceRegistrationIntent(intent);
+          //Added by Wei.He for update the personal info
+          else if (UPDATE_CONTACTS_INFO_ACTION.equals(intent.getAction())) handUpdatePersonalInfoQuestIntent(intent);
         }
       });
     }
@@ -138,6 +144,36 @@ public class RegistrationService extends Service {
       challengeReceiver = null;
     }
   }
+
+    /**
+     * Added by Wei.He
+     *
+     * @param intent
+     */
+    private void handUpdatePersonalInfoQuestIntent(Intent intent) {
+        Log.d(TAG, "handUpdatePersonalInfoQuestIntent action is:" + intent.getAction());
+        String key = intent.getStringExtra("pref_key");
+        byte[] avatar = null;
+        String gender = null;
+        String name = null;
+        String sign = null;
+        Integer age = null;
+
+        if (AvatarPreference.PREF_KEY_AVATAR.equals(key)) {
+            avatar = intent.getByteArrayExtra(key);
+        } else if (TextItemPreference.PREF_KEY_GENDER.equals(key)) {
+            gender = intent.getStringExtra(key);
+        } else if (TextItemPreference.PREF_KEY_AGE.equals(key)) {
+            age = Integer.valueOf(intent.getStringExtra(key));
+        } else if (TextItemPreference.PREF_KEY_NAME.equals(key)) {
+            name = intent.getStringExtra(key);
+        } else if (TextItemPreference.PREF_KEY_SIGN.equals(key)) {
+            sign = intent.getStringExtra(key);
+        }
+
+        PushServiceSocket socket = PushServiceSocketFactory.create(this);
+        socket.uploadContactsInfo(avatar, gender, age, name, sign);
+    }
 
   private void handleVoiceRequestedIntent(Intent intent) {
     setState(new RegistrationState(RegistrationState.STATE_VOICE_REQUESTED,

@@ -225,6 +225,7 @@
               android:finishOnTaskLaunch="true" />
 
     <activity android:name=".AttachmentViewerActivity" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+    <activity android:name=".PersonalInfoActivity"/>
 
     <service android:enabled="true" android:name=".service.GcmRegistrationService"/>
     <service android:enabled="true" android:name=".service.ApplicationMigrationService"/>

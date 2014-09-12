@@ -80,6 +80,9 @@ public class PushServiceSocket {
 
     private static final String UPDATE_GETUI_CLIENTID_PATH         = "/v1/accounts/getui/";
 
+    private static final String UPLOAD_CONTACTS_INFO_PATH = "/v1/accounts/code/saveorupdate/%s";
+    private static final String GET_CONTACTS_INFO_PATH = "/v1/accounts/code/get/%s";
+
   private static final boolean ENFORCE_SSL = true;
 
   private final Context        context;
@@ -310,6 +313,40 @@ public class PushServiceSocket {
       connection.disconnect();
     }
   }
+
+    public void uploadContactsInfo(byte[] avatar, String gender, Integer age, String name, String signature) {
+        try {
+            Long attachmentId = null;
+            if (avatar != null && avatar.length > 0) {
+                String response = makeRequest(String.format(ATTACHMENT_PATH, ""), "GET", null);
+                AttachmentDescriptor attachmentKey = new Gson().fromJson(response, AttachmentDescriptor.class);
+
+                if (attachmentKey == null || attachmentKey.getLocation() == null) {
+                    throw new IOException("Server failed to allocate an attachment key!");
+                }
+
+                Log.w("PushServiceSocket", "Got avatar attachment content location: " + attachmentKey.getLocation());
+                attachmentId = attachmentKey.getId();
+                uploadExternalFile("PUT", attachmentKey.getLocation(), avatar);
+            }
+            ContactsInfo contactsInfo = new ContactsInfo(localNumber, name, null, age, null, attachmentId, signature);
+
+            makeRequest(String.format(UPLOAD_CONTACTS_INFO_PATH, localNumber), "PUT", new Gson().toJson(contactsInfo));
+        } catch (IOException ioe) {
+            Log.w("PushServiceSocket", ioe);
+        }
+    }
+
+    public ContactsInfo getContactsInfo(String number) {
+        try {
+            String response = makeRequest(String.format(GET_CONTACTS_INFO_PATH, number), "GET", null);
+            ContactsInfo contactsInfo = new Gson().fromJson(response, ContactsInfo.class);
+            return contactsInfo;
+        } catch (IOException ioe) {
+            Log.w("PushServiceSocket", ioe);
+        }
+        return null;
+    }
 
   private void uploadExternalFile(String method, String url, byte[] data)
     throws IOException
