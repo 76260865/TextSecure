@@ -12,7 +12,6 @@ import android.widget.ImageView;
 
 import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.preferences.AvatarPreference;
-import org.thoughtcrime.securesms.service.RegistrationService;
 import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 
@@ -54,10 +53,11 @@ public class PersonalInfoActivity extends PreferenceActivity {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             intent.putExtra("crop", "true");
-            intent.putExtra("outputX", 30);
-            intent.putExtra("outputY", 30);
+            intent.putExtra("outputX", 100);
+            intent.putExtra("outputY", 100);
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
+            intent.putExtra("return-data", true);
 
             startActivityForResult(Intent.createChooser(intent,
                     getString(R.string.personal_info_activity__choose_image)), SELECT_PICTURE);
@@ -68,12 +68,14 @@ public class PersonalInfoActivity extends PreferenceActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK) {
-            Bitmap bitmap = data.getExtras().getParcelable("data");
-            mAvatarPreference.updateAvatar(bitmap);
-            ContentValues values = new ContentValues();
-            values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
-            ContactsInfoDatabase.getInstance(getApplicationContext())
-                    .updateContactInfo(values, TextSecurePreferences.getLocalNumber(this));
+            Bitmap bitmap = data.getParcelableExtra("data");
+            if (bitmap != null) {
+                mAvatarPreference.updateAvatar(bitmap);
+                ContentValues values = new ContentValues();
+                values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
+                ContactsInfoDatabase.getInstance(getApplicationContext())
+                        .updateContactInfo(values, TextSecurePreferences.getLocalNumber(this));
+            }
         }
     }
 }

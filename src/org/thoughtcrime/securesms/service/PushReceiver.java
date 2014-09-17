@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.service;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Pair;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.crypto.DecryptingQueue;
 import org.thoughtcrime.securesms.crypto.KeyExchangeProcessor;
 import org.thoughtcrime.securesms.crypto.KeyExchangeProcessorV2;
@@ -15,6 +17,7 @@ import org.thoughtcrime.securesms.database.EncryptingSmsDatabase;
 import org.thoughtcrime.securesms.database.MmsDatabase;
 import org.thoughtcrime.securesms.mms.IncomingMediaMessage;
 import org.thoughtcrime.securesms.notifications.MessageNotifier;
+import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.recipients.RecipientFactory;
 import org.thoughtcrime.securesms.recipients.RecipientFormattingException;
@@ -30,8 +33,10 @@ import org.whispersystems.textsecure.crypto.InvalidMessageException;
 import org.whispersystems.textsecure.crypto.InvalidVersionException;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.crypto.protocol.PreKeyWhisperMessage;
+import org.whispersystems.textsecure.push.ContactsInfo;
 import org.whispersystems.textsecure.push.IncomingPushMessage;
 import org.whispersystems.textsecure.push.PushMessageProtos.PushMessageContent;
+import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.storage.InvalidKeyIdException;
 import org.whispersystems.textsecure.storage.RecipientDevice;
 import org.whispersystems.textsecure.storage.Session;
@@ -90,8 +95,25 @@ public class PushReceiver {
 
     if      (message.isSecureMessage()) handleReceivedSecureMessage(masterSecret, message);
     else if (message.isPreKeyBundle())  handleReceivedPreKeyBundle(masterSecret, message);
+    else if (message.isUpdateUserInfo()) handleReceiveUpdateUserInfoMessage(masterSecret, message);
     else                                handleReceivedMessage(masterSecret, message, false);
   }
+
+    private void handleReceiveUpdateUserInfoMessage(MasterSecret masterSecret, IncomingPushMessage message) {
+        //update the contacts info from server
+        PushServiceSocket socket = PushServiceSocketFactory.create(context);
+        ContactsInfo contactsInfo = socket.getContactsInfo(message.getSource());
+        if (contactsInfo != null) {
+            ContentValues values = new ContentValues();
+            values.put(ContactsInfoDatabase.AGE_COLUMN,contactsInfo.getAge());
+            values.put(ContactsInfoDatabase.GENDER_COLUMN, contactsInfo.getGender());
+            values.put(ContactsInfoDatabase.NAME_COLUMN, contactsInfo.getNickname());
+            values.put(ContactsInfoDatabase.SIGNATURE_COLUMN, contactsInfo.getSign());
+            ContactsInfoDatabase.getInstance(context).updateContactInfo(values,contactsInfo.getNumber());
+            Recipients recipients = RecipientFactory.getRecipientsFromMessage(context, message, false);
+            RecipientFactory.clearCache(recipients.getPrimaryRecipient());
+        }
+    }
 
   private void handleReceivedSecureMessage(MasterSecret masterSecret, IncomingPushMessage message) {
     long id = DatabaseFactory.getPushDatabase(context).insert(message);

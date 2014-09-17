@@ -17,7 +17,9 @@
 package org.thoughtcrime.securesms;
 
 
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -40,6 +42,9 @@ import org.thoughtcrime.securesms.contacts.ContactSelectionListAdapter;
 import org.thoughtcrime.securesms.contacts.ContactSelectionListAdapter.ViewHolder;
 import org.thoughtcrime.securesms.contacts.ContactSelectionListAdapter.DataHolder;
 import org.thoughtcrime.securesms.contacts.ContactsDatabase;
+import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
+import org.thoughtcrime.securesms.recipients.RecipientFactory;
+import org.whispersystems.textsecure.push.ContactsInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -67,9 +72,10 @@ public class PushContactSelectionListFragment extends    Fragment
   private StickyListHeadersListView listView;
   private EditText                  filterEditText;
   private String                    cursorFilter;
+    private ContentObserver observer;
 
 
-  @Override
+    @Override
   public void onActivityCreated(Bundle icicle) {
     super.onCreate(icicle);
     initializeResources();
@@ -90,6 +96,7 @@ public class PushContactSelectionListFragment extends    Fragment
   public void onDestroyView() {
     super.onDestroyView();
     ContactsDatabase.destroyInstance();
+      getActivity().getContentResolver().unregisterContentObserver(observer);
   }
 
   @Override
@@ -127,14 +134,35 @@ public class PushContactSelectionListFragment extends    Fragment
     selectedContacts.remove(contactData.id);
   }
 
-  private void initializeCursor() {
-    ContactSelectionListAdapter adapter = new ContactSelectionListAdapter(getActivity(), null, multi);
-    selectedContacts = adapter.getSelectedContacts();
-    listView.setAdapter(adapter);
-    this.getLoaderManager().initLoader(0, null, this);
-  }
+    private void initializeCursor() {
+        final ContactSelectionListAdapter adapter = new ContactSelectionListAdapter(getActivity(), null, multi);
+        selectedContacts = adapter.getSelectedContacts();
+        listView.setAdapter(adapter);
+        //Added by Wei.He for listening the change in contacts info database
+        initializeContactsContentObserver(adapter);
+        getActivity().getContentResolver().registerContentObserver(Uri
+                .parse(ContactsInfoDatabase.CONTACTS_INFO_URI), true, observer);
+        this.getLoaderManager().initLoader(0, null, this);
+    }
 
-  private void initializeResources() {
+    private void initializeContactsContentObserver(final ContactSelectionListAdapter adapter) {
+        observer = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                RecipientFactory.clearCache();
+                getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        };
+    }
+
+    private void initializeResources() {
     emptyText = (TextView) getView().findViewById(android.R.id.empty);
     listView  = (StickyListHeadersListView) getView().findViewById(android.R.id.list);
     listView.setFocusable(true);

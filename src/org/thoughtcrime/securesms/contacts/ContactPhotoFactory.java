@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.thoughtcrime.securesms.R;
@@ -14,11 +15,15 @@ import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.LRUCache;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.textsecure.push.ContactsInfo;
 import org.whispersystems.textsecure.push.PushServiceSocket;
+import org.whispersystems.textsecure.util.InvalidNumberException;
+import org.whispersystems.textsecure.util.PhoneNumberFormatter;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -92,7 +97,7 @@ public class ContactPhotoFactory {
 
       if (cursor != null && cursor.moveToFirst()) {
         contactPhoto = getContactPhoto(context, Uri.withAppendedPath(Contacts.CONTENT_URI,
-                                       cursor.getLong(0) + ""));
+                                       cursor.getLong(0) + ""), "");
       } else {
         contactPhoto = getDefaultContactPhoto(context);
       }
@@ -112,31 +117,64 @@ public class ContactPhotoFactory {
     localUserContactPhotoCache.remove(recipient.getContactUri());
   }
 
-    //TODO refactor the code in the next week
-  public static Bitmap getContactPhoto(Context context, Uri uri, String ... number) {
-    final Bitmap contactPhoto;
-      PushServiceSocket socket = PushServiceSocketFactory.create(context);
-      String phoneNumber = number[0].startsWith("+86") ? number[0] : "+86".concat(number[0]);
-      ContactsInfo contactsInfo = socket.getContactsInfo(phoneNumber);
-      Log.d("ContactPhotoFactory", "contactsInfo:" +contactsInfo + " number : " + phoneNumber);
-      if (contactsInfo != null && contactsInfo.getImageattachmentid () != null) {
-          try {
-              File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid ()) ;
-              FileInputStream fileInputStream = new FileInputStream(avatar);
-              if (avatar.exists() && avatar.length() > 0) {
-                  Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                  Log.d("ContactPhotoFactory", "get the contact photo from server");
-                  return bitmap;
-              }
-          } catch (IOException e) {
-              Log.w("ContactPhotoFactory", e.getMessage());
-          }
+    // Modified by Wei.He for get the contact photo first from server
+  public static Bitmap getContactPhoto(Context context, Uri uri, String number) {
+      Bitmap contactPhoto;
+      contactPhoto = retrieveAvatar(context, number);
+      if (contactPhoto != null) {
+          Log.d("ContactPhotoFactory", "get the contact photo from server");
+          return contactPhoto;
       }
 
+      // get photo from local if there is not exits in our server
     InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
     if (inputStream == null) contactPhoto = ContactPhotoFactory.getDefaultContactPhoto(context);
     else                     contactPhoto = BitmapFactory.decodeStream(inputStream);
 
     return contactPhoto;
   }
+
+    private static ContactsInfo getContactsInfo(Context context, PushServiceSocket socket, String number) throws InvalidNumberException {
+        String localNumber = TextSecurePreferences.getLocalNumber(context);
+        if (!TextUtils.isEmpty(localNumber)) {
+            String phoneNumber = PhoneNumberFormatter.formatNumber(number, localNumber);
+            ContactsInfo contactsInfo = socket.getContactsInfo(phoneNumber);
+            return contactsInfo;
+        }
+        return null;
+    }
+
+    private static Bitmap retrieveAvatar(Context context, String number) {
+        PushServiceSocket socket = PushServiceSocketFactory.create(context);
+        FileInputStream fileInputStream = null;
+        ContactsInfo contactsInfo;
+        try {
+            contactsInfo = getContactsInfo(context, socket, number);
+            if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
+                Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
+                        + contactsInfo.getNumber());
+                File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
+                if (avatar.exists() && avatar.length() > 0) {
+                    fileInputStream = new FileInputStream(avatar);
+                    Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                    return bitmap;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            Log.d("ContactPhotoFactory", e.getMessage());
+        } catch (InvalidNumberException e) {
+            Log.d("ContactPhotoFactory", e.getMessage());
+        } catch (IOException e) {
+            Log.d("ContactPhotoFactory", e.getMessage());
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    Log.d("ContactPhotoFactory", e.getMessage());
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -45,6 +45,9 @@ import java.util.List;
  */
 public class ContactsInfoDatabase {
     private static final String TAG = ContactsInfoDatabase.class.getSimpleName();
+
+    public static final String CONTACTS_INFO_URI = "content://textsecure/contacts-info";
+
     private final DatabaseOpenHelper dbHelper;
     private final Context context;
 
@@ -126,6 +129,7 @@ public class ContactsInfoDatabase {
         SQLiteDatabase localDb = dbHelper.getWritableDatabase();
         int i = localDb.update(TABLE_NAME, values, NUMBER_COLUMN + " = '" + number + "'", null);
         Log.d(TAG, "finished insertOrUpdateIdentity. i: " + i);
+        context.getContentResolver().notifyChange(Uri.parse(CONTACTS_INFO_URI), null);
     }
 
     private static class DatabaseOpenHelper extends SQLiteOpenHelper {

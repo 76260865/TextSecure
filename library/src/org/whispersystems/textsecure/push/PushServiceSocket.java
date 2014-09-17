@@ -314,7 +314,7 @@ public class PushServiceSocket {
     }
   }
 
-    public void uploadContactsInfo(byte[] avatar, String gender, Integer age, String name, String signature) {
+    public void uploadContactsInfo(byte[] avatar, String gender, Integer age, String name, String signature, List<String> pushNumbers) {
         try {
             Long attachmentId = null;
             if (avatar != null && avatar.length > 0) {
@@ -330,6 +330,7 @@ public class PushServiceSocket {
                 uploadExternalFile("PUT", attachmentKey.getLocation(), avatar);
             }
             ContactsInfo contactsInfo = new ContactsInfo(localNumber, name, null, age, null, attachmentId, signature);
+            contactsInfo.setFriends(pushNumbers);
 
             makeRequest(String.format(UPLOAD_CONTACTS_INFO_PATH, localNumber), "PUT", new Gson().toJson(contactsInfo));
         } catch (IOException ioe) {

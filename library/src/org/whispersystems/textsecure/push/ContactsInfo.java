@@ -1,5 +1,7 @@
 package org.whispersystems.textsecure.push;
 
+import java.util.List;
+
 /**
  * Created by real123 on 9/12/14.
  */
@@ -12,6 +14,7 @@ public class ContactsInfo {
     private String work;
     private Long imageattachmentid;
     private String sign;
+    private List<String> friends;
 
     public Long getId() {
         return id;
@@ -75,6 +78,15 @@ public class ContactsInfo {
 
     public void setSign(String sign) {
         this.sign = sign;
+    }
+
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<String> friends) {
+        this.friends = friends;
     }
 
     public ContactsInfo() {

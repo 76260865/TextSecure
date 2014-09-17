@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +17,9 @@ import android.preference.PreferenceManager;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.contacts.ContactAccessor;
+import org.thoughtcrime.securesms.contacts.ContactsDatabase;
+import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.crypto.IdentityKeyUtil;
 import org.thoughtcrime.securesms.preferences.AvatarPreference;
 import org.thoughtcrime.securesms.preferences.TextItemPreference;
@@ -25,12 +29,14 @@ import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.textsecure.crypto.IdentityKey;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.crypto.PreKeyUtil;
+import org.whispersystems.textsecure.directory.Directory;
 import org.whispersystems.textsecure.push.ExpectationFailedException;
 import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.storage.PreKeyRecord;
 import org.whispersystems.textsecure.util.Util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -153,6 +159,7 @@ public class RegistrationService extends Service {
     private void handUpdatePersonalInfoQuestIntent(Intent intent) {
         Log.d(TAG, "handUpdatePersonalInfoQuestIntent action is:" + intent.getAction());
         String key = intent.getStringExtra("pref_key");
+        Cursor cursor = null;
         byte[] avatar = null;
         String gender = null;
         String name = null;
@@ -170,9 +177,10 @@ public class RegistrationService extends Service {
         } else if (TextItemPreference.PREF_KEY_SIGN.equals(key)) {
             sign = intent.getStringExtra(key);
         }
+        List<String> pushNumbers = Directory.getInstance(this).getActiveNumbers();
 
         PushServiceSocket socket = PushServiceSocketFactory.create(this);
-        socket.uploadContactsInfo(avatar, gender, age, name, sign);
+        socket.uploadContactsInfo(avatar, gender, age, name, sign, pushNumbers);
     }
 
   private void handleVoiceRequestedIntent(Intent intent) {

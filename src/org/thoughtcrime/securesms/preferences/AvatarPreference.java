@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import org.thoughtcrime.securesms.R;
@@ -47,8 +48,8 @@ public class AvatarPreference extends Preference {
     }
 
     public void updateAvatar(Bitmap bitmap) {
-        mImageContactPhoto.setImageBitmap(bitmap);
         setAvatarBitmap(bitmap);
+        notifyChanged();
         Intent intent = new Intent(getContext(), RegistrationService.class);
         intent.setAction(RegistrationService.UPDATE_CONTACTS_INFO_ACTION);
         intent.putExtra("pref_key", getKey());

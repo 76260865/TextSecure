@@ -20,7 +20,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -43,9 +45,12 @@ import org.thoughtcrime.securesms.components.DefaultSmsReminder;
 import org.thoughtcrime.securesms.components.PushRegistrationReminder;
 import org.thoughtcrime.securesms.components.ReminderView;
 import org.thoughtcrime.securesms.components.SystemSmsImportReminder;
+import org.thoughtcrime.securesms.contacts.ContactsDatabase;
+import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.loaders.ConversationListLoader;
 import org.thoughtcrime.securesms.notifications.MessageNotifier;
+import org.thoughtcrime.securesms.recipients.RecipientFactory;
 import org.thoughtcrime.securesms.recipients.Recipients;
 import org.thoughtcrime.securesms.util.Dialogs;
 import org.whispersystems.textsecure.crypto.MasterSecret;
@@ -62,6 +67,7 @@ public class ConversationListFragment extends SherlockListFragment
   private ActionMode                   actionMode;
   private ReminderView                 reminderView;
   private String                       queryFilter  = "";
+    private ContentObserver observer;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
@@ -73,6 +79,7 @@ public class ConversationListFragment extends SherlockListFragment
   @Override
   public void onDestroyView() {
     super.onDestroyView();
+      getActivity().getContentResolver().unregisterContentObserver(observer);
     getListView().setAdapter(null);
   }
 
@@ -87,9 +94,33 @@ public class ConversationListFragment extends SherlockListFragment
     initializeBatchListener();
 
     getLoaderManager().initLoader(0, null, this);
+      //Added by Wei.He for listening the change in contacts info database
+      initializeContactsContentObserver();
+      getActivity().getContentResolver().registerContentObserver(Uri
+              .parse(ContactsInfoDatabase.CONTACTS_INFO_URI), true, observer);
   }
 
-  @Override
+    private void initializeContactsContentObserver() {
+        observer = new ContentObserver(null) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                RecipientFactory.clearCache();
+                getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        ConversationListAdapter adapter = (ConversationListAdapter)getListAdapter();
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    @Override
   public void onResume() {
     super.onResume();
 

@@ -138,4 +138,8 @@ public class IncomingPushMessage implements Parcelable {
   public boolean isPreKeyBundle() {
     return getType() == IncomingPushMessageSignal.Type.PREKEY_BUNDLE_VALUE;
   }
+
+    public boolean isUpdateUserInfo() {
+        return getType() == IncomingPushMessageSignal.Type.UPDATE_USER_INFO_VALUE;
+    }
 }
