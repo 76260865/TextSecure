@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.contacts;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -119,6 +120,7 @@ public class ContactPhotoFactory {
 
     // Modified by Wei.He for get the contact photo first from server
   public static Bitmap getContactPhoto(Context context, Uri uri, String number) {
+      Log.d("ContactPhotoFactory", "getContactPhoto");
       Bitmap contactPhoto;
       contactPhoto = retrieveAvatar(context, number);
       if (contactPhoto != null) {
@@ -145,6 +147,31 @@ public class ContactPhotoFactory {
     }
 
     private static Bitmap retrieveAvatar(Context context, String number) {
+        //retrieve the avatar from db first
+        Cursor cursor = null;
+        String phoneNumber = null;
+        try {
+            String localNumber = TextSecurePreferences.getLocalNumber(context);
+            phoneNumber = PhoneNumberFormatter.formatNumber(number, localNumber);
+            cursor = ContactsInfoDatabase.getInstance(context).query(phoneNumber);
+            Log.d("ContactPhotoFactory","cursor from db" + cursor== null ? "": "not null");
+            if (cursor != null && cursor.moveToFirst()) {
+                byte[] avatar = cursor.getBlob(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AVATAR_COLUMN));
+                if (avatar != null && avatar.length > 0) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
+                        Log.d("ContactPhotoFactory","retrieveAvatar from db");
+                    return bitmap;
+                }
+            }
+        } catch (InvalidNumberException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        // retrieve the avatar from server if not exist in db
         PushServiceSocket socket = PushServiceSocketFactory.create(context);
         FileInputStream fileInputStream = null;
         ContactsInfo contactsInfo;
@@ -157,6 +184,10 @@ public class ContactPhotoFactory {
                 if (avatar.exists() && avatar.length() > 0) {
                     fileInputStream = new FileInputStream(avatar);
                     Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                    ContentValues values = new ContentValues();
+                    values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
+                    ContactsInfoDatabase.getInstance(context).updateContactInfo(values, phoneNumber);
+                    Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
                     return bitmap;
                 }
             }
