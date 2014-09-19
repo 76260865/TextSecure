@@ -95,8 +95,8 @@ public class PushContactSelectionListFragment extends    Fragment
   @Override
   public void onDestroyView() {
     super.onDestroyView();
-    ContactsDatabase.destroyInstance();
-      getActivity().getContentResolver().unregisterContentObserver(observer);
+//    ContactsDatabase.destroyInstance();
+//      getActivity().getContentResolver().unregisterContentObserver(observer);
   }
 
   @Override
@@ -139,9 +139,9 @@ public class PushContactSelectionListFragment extends    Fragment
         selectedContacts = adapter.getSelectedContacts();
         listView.setAdapter(adapter);
         //Added by Wei.He for listening the change in contacts info database
-        initializeContactsContentObserver(adapter);
-        getActivity().getContentResolver().registerContentObserver(Uri
-                .parse(ContactsInfoDatabase.CONTACTS_INFO_URI), true, observer);
+//        initializeContactsContentObserver(adapter);
+//        getActivity().getContentResolver().registerContentObserver(Uri
+//                .parse(ContactsInfoDatabase.CONTACTS_INFO_URI), true, observer);
         this.getLoaderManager().initLoader(0, null, this);
     }
 
