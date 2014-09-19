@@ -146,7 +146,7 @@ public class ContactPhotoFactory {
         return null;
     }
 
-    private static Bitmap retrieveAvatar(Context context, String number) {
+    private static Bitmap retrieveAvatar(final Context context, final String number) {
         //retrieve the avatar from db first
         Cursor cursor = null;
         String phoneNumber = null;
@@ -171,41 +171,48 @@ public class ContactPhotoFactory {
             }
         }
 
-        // retrieve the avatar from server if not exist in db
-        PushServiceSocket socket = PushServiceSocketFactory.create(context);
-        FileInputStream fileInputStream = null;
-        ContactsInfo contactsInfo;
-        try {
-            contactsInfo = getContactsInfo(context, socket, number);
-            if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
-                Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
-                        + contactsInfo.getNumber());
-                File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
-                if (avatar.exists() && avatar.length() > 0) {
-                    fileInputStream = new FileInputStream(avatar);
-                    Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                    ContentValues values = new ContentValues();
-                    values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
-                    ContactsInfoDatabase.getInstance(context).updateContactInfo(values, phoneNumber);
-                    Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
-                    return bitmap;
-                }
-            }
-        } catch (FileNotFoundException e) {
-            Log.d("ContactPhotoFactory", e.getMessage());
-        } catch (InvalidNumberException e) {
-            Log.d("ContactPhotoFactory", e.getMessage());
-        } catch (IOException e) {
-            Log.d("ContactPhotoFactory", e.getMessage());
-        } finally {
-            if (fileInputStream != null) {
+        final String finalPhoneNumber = phoneNumber;
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // retrieve the avatar from server if not exist in db
+                PushServiceSocket socket = PushServiceSocketFactory.create(context);
+                FileInputStream fileInputStream = null;
+                ContactsInfo contactsInfo;
                 try {
-                    fileInputStream.close();
+                    contactsInfo = getContactsInfo(context, socket, number);
+                    if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
+                        Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
+                                + contactsInfo.getNumber());
+                        File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
+                        if (avatar.exists() && avatar.length() > 0) {
+                            fileInputStream = new FileInputStream(avatar);
+                            Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                            ContentValues values = new ContentValues();
+                            values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
+                            ContactsInfoDatabase.getInstance(context).updateContactInfo(values, finalPhoneNumber);
+                            Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
+                        }
+                    }
+                } catch (FileNotFoundException e) {
+                    Log.d("ContactPhotoFactory", e.getMessage());
+                } catch (InvalidNumberException e) {
+                    Log.d("ContactPhotoFactory", e.getMessage());
                 } catch (IOException e) {
                     Log.d("ContactPhotoFactory", e.getMessage());
+                } finally {
+                    if (fileInputStream != null) {
+                        try {
+                            fileInputStream.close();
+                        } catch (IOException e) {
+                            Log.d("ContactPhotoFactory", e.getMessage());
+                        }
+                    }
                 }
             }
-        }
+        });
+        thread.start();
+
         return null;
     }
 }
