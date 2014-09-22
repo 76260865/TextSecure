@@ -161,7 +161,7 @@ public class RegistrationService extends Service {
         String key = intent.getStringExtra("pref_key");
         Cursor cursor = null;
         byte[] avatar = null;
-        String gender = null;
+        boolean gender = true;
         String name = null;
         String sign = null;
         Integer age = null;
@@ -169,7 +169,7 @@ public class RegistrationService extends Service {
         if (AvatarPreference.PREF_KEY_AVATAR.equals(key)) {
             avatar = intent.getByteArrayExtra(key);
         } else if (TextItemPreference.PREF_KEY_GENDER.equals(key)) {
-            gender = intent.getStringExtra(key);
+            gender = intent.getBooleanExtra(key,true);
         } else if (TextItemPreference.PREF_KEY_AGE.equals(key)) {
             age = Integer.valueOf(intent.getStringExtra(key));
         } else if (TextItemPreference.PREF_KEY_NAME.equals(key)) {

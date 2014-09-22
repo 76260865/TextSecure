@@ -8,30 +8,68 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.ListPreference;
+import android.preference.PreferenceScreen;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.widget.ImageView;
-
+import org.thoughtcrime.securesms.service.RegistrationService;
 import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.preferences.AvatarPreference;
 import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
+import org.thoughtcrime.securesms.R;
+import java.lang.Override;
+import android.widget.Toast;
 
 /**
  * Created by Wei.He on 9/10/14.
  */
-public class PersonalInfoActivity extends PreferenceActivity {
+public class PersonalInfoActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
     private static final int SELECT_PICTURE = 2;
 
     private ImageView mImageContactPhoto;
 
     private AvatarPreference mAvatarPreference;
+    private ListPreference mGenderPreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.personal_info_preferences);
         mAvatarPreference = (AvatarPreference) findPreference("pref_avatar");
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        mGenderPreference = (ListPreference) findPreference("pref_gender");
         mAvatarPreference.setOnPreferenceClickListener(mAvatarPrefClickListener);
         initAvatar();
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key) {
+        boolean blGender=true;
+        if (key.equals("pref_gender")){
+            if(mGenderPreference.getValue().equals("1")){
+                blGender=true;
+                mGenderPreference.setSummary(getString(R.string.personal_info_gender_male));
+            }else{
+                blGender=false;
+                sharedPreferences.getBoolean(key,true);
+                mGenderPreference.setSummary(getString(R.string.personal_info_gender_female));
+            }
+
+            Intent intent = new Intent(getApplicationContext(), RegistrationService.class);
+            intent.setAction(RegistrationService.UPDATE_CONTACTS_INFO_ACTION);
+            intent.putExtra(key,blGender);
+            intent.putExtra("pref_key",key);
+            getApplicationContext().startService(intent);
+        }
     }
 
     private void initAvatar() {

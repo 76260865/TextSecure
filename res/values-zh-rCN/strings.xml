@@ -714,5 +714,23 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="reminder_header_sms_import_text">TextSecure 可以将您手机中的短信息复制到加密的数据库中。</string>
   <string name="reminder_header_push_title">启用 TextSecure 信息？</string>
   <string name="reminder_header_push_text">顷刻投递，私密存储，并且没有短信费用。</string>
-  <!--EOF-->
+  <!--persional_info_activity-->
+  <string name="personal_info_avatar">用户头像</string>
+  <string name="personal_info_gender">性别</string>
+  <string name="personal_info_gender_dialog_title">请选择性别--</string>
+  <string name="personal_info_age">年龄</string>
+  <string name="personal_info_name">姓名</string>
+  <string name="personal_info_signature">签名</string>
+  <string name="personal_info_gender_male">男</string>
+  <string name="personal_info_gender_female">女</string>
+  <string-array name="gender_opts">
+     <item>男</item>
+     <item>女</item>
+  </string-array>
+
+    <string-array name="gender_opts_values">
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+   <!--EOF-->
 </resources>

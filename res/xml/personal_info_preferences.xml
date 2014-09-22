@@ -5,31 +5,32 @@
         android:key="pref_avatar"
         android:persistent="true"
         android:summary=""
-        android:title="Avatar"
+        android:title="@string/personal_info_avatar"
         android:widgetLayout="@layout/preference_widget_personal_avatar" />
-    <org.thoughtcrime.securesms.preferences.TextItemPreference
+    <ListPreference
         android:key="pref_gender"
-        android:persistent="true"
+        android:title="@string/personal_info_gender"
         android:summary=""
-        android:title="Gender"
-        android:widgetLayout="@layout/preference_widget_personal_info" />
+        android:dialogTitle="@string/personal_info_gender_dialog_title"
+        android:entries="@array/gender_opts"
+        android:entryValues="@array/gender_opts_values"/>
     <org.thoughtcrime.securesms.preferences.TextItemPreference
         android:key="pref_age"
         android:numeric="integer"
         android:persistent="true"
         android:summary=""
-        android:title="Age"
+        android:title="@string/personal_info_age"
         android:widgetLayout="@layout/preference_widget_personal_info" />
     <org.thoughtcrime.securesms.preferences.TextItemPreference
         android:key="pref_name"
         android:persistent="true"
         android:summary=""
-        android:title="Name"
+        android:title="@string/personal_info_name"
         android:widgetLayout="@layout/preference_widget_personal_info" />
     <org.thoughtcrime.securesms.preferences.TextItemPreference
         android:key="pref_signature"
         android:persistent="true"
         android:summary=""
-        android:title="Signature"
+        android:title="@string/personal_info_signature"
         android:widgetLayout="@layout/preference_widget_personal_info" />
 </PreferenceScreen>
