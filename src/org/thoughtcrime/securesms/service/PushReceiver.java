@@ -104,14 +104,15 @@ public class PushReceiver {
         PushServiceSocket socket = PushServiceSocketFactory.create(context);
         ContactsInfo contactsInfo = socket.getContactsInfo(message.getSource());
         if (contactsInfo != null) {
+            Recipients recipients = RecipientFactory.getRecipientsFromMessage(context, message, false);
+            RecipientFactory.clearCache(recipients.getPrimaryRecipient());
             ContentValues values = new ContentValues();
             values.put(ContactsInfoDatabase.AGE_COLUMN,contactsInfo.getAge());
             values.put(ContactsInfoDatabase.GENDER_COLUMN, contactsInfo.getGender());
             values.put(ContactsInfoDatabase.NAME_COLUMN, contactsInfo.getNickname());
             values.put(ContactsInfoDatabase.SIGNATURE_COLUMN, contactsInfo.getSign());
+            values.put(ContactsInfoDatabase.AVATAR_COLUMN, new byte[]{});
             ContactsInfoDatabase.getInstance(context).updateContactInfo(values,contactsInfo.getNumber());
-            Recipients recipients = RecipientFactory.getRecipientsFromMessage(context, message, false);
-            RecipientFactory.clearCache(recipients.getPrimaryRecipient());
         }
     }
 

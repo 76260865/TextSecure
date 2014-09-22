@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -55,6 +56,8 @@ public class BitmapWorkerRunnable implements Runnable {
     this.number = number;
   }
 
+    //Added by Wei.He for fix the bug what not show the avatar in the list
+    private Handler handler = new Handler();
   @Override
   public void run() {
     final Bitmap bitmap;
@@ -77,7 +80,7 @@ public class BitmapWorkerRunnable implements Runnable {
 
       if (bitmapWorkerTask.getTag().equals(number) && imageView != null) {
         final BitmapDrawable drawable = new BitmapDrawable(context.getResources(), bitmap);
-        imageView.post(new Runnable() {
+          handler.post(new Runnable() {
           @Override
           public void run() {
             imageView.setImageDrawable(drawable);

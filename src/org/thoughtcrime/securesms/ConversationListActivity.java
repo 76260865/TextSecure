@@ -63,7 +63,7 @@ public class ConversationListActivity extends PassphraseRequiredSherlockFragment
 
     initializeSenderReceiverService();
     initializeResources();
-    initializeContactUpdatesReceiver();
+//    initializeContactUpdatesReceiver();
 
     DirectoryRefreshListener.schedule(this);
   }
