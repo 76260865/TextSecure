@@ -30,7 +30,7 @@
   <string name="ApplicationPreferencesActivity_sms_enabled">已开启接收短信</string>
   <string name="ApplicationPreferencesActivity_touch_to_change_your_default_sms_app">点击来改变默认的短信应用</string>
   <string name="ApplicationPreferencesActivity_sms_disabled">已停用接收短信</string>
-  <string name="ApplicationPreferencesActivity_touch_to_make_textsecure_your_default_sms_app">点击将TextSecure设定为默认的短信应用</string>
+  <string name="ApplicationPreferencesActivity_touch_to_make_textsecure_your_default_sms_app">点击将RayMessage设定为默认的短信应用</string>
   <!--AttachmentTypeSelectorAdapter-->
   <string name="AttachmentTypeSelectorAdapter_picture">图片</string>
   <string name="AttachmentTypeSelectorAdapter_video">视频</string>
@@ -111,7 +111,7 @@
   <string name="ExportFragment_this_will_export_your_encrypted_keys_settings_and_messages">这会将您的密钥、设置和信息加密后导出到SD卡。</string>
   <string name="ExportFragment_export">导出</string>
   <string name="ExportFragment_export_plaintext_to_sd_card">导出明文到SD卡？</string>
-  <string name="ExportFragment_warning_this_will_export_the_plaintext_contents">警告：这会将您的TextSecure信息以明文的方式导出到SD卡上。</string>
+  <string name="ExportFragment_warning_this_will_export_the_plaintext_contents">警告：这会将您的RayMessage信息以明文的方式导出到SD卡上。</string>
   <string name="ExportFragment_cancel">取消</string>
   <string name="ExportFragment_exporting">正在导出</string>
   <string name="ExportFragment_exporting_plaintext_to_sd_card">正在导出明文到SD卡…</string>
@@ -124,8 +124,8 @@
   <string name="GroupCreateActivity_actionbar_update_title">更新群组</string>
   <string name="GroupCreateActivity_group_name_hint">群组名称</string>
   <string name="GroupCreateActivity_actionbar_mms_title">新彩信群组</string>
-  <string name="GroupCreateActivity_contacts_dont_support_push">您所选择的联系人并不支持TextSecure群组，该群组将转化为彩信群组。</string>
-  <string name="GroupCreateActivity_you_dont_support_push">您没有注册使用数据信道，TextSecure群组功能将被禁用。</string>
+  <string name="GroupCreateActivity_contacts_dont_support_push">您所选择的联系人并不支持RayMessage群组，该群组将转化为彩信群组。</string>
+  <string name="GroupCreateActivity_you_dont_support_push">您没有注册使用数据信道，RayMessage群组功能将被禁用。</string>
   <string name="GroupCreateActivity_contacts_mms_exception">发生不可预料的错误导致创建群组失败。</string>
   <string name="GroupCreateActivity_contacts_no_members">群组中至少要有一个人！</string>
   <string name="GroupCreateActivity_contacts_invalid_number">目前无法正确获取您组内一名成员的信息，请尝试修复或移除这名联系人以重试。</string>
@@ -133,17 +133,17 @@
   <string name="GroupCreateActivity_avatar_content_description">群组头像</string>
   <string name="GroupCreateActivity_menu_create_title">创建群组</string>
   <string name="GroupCreateActivity_creating_group">正在创建群组 %1$s…</string>
-  <string name="GroupCreateActivity_cannot_add_non_push_to_existing_group">无法添加非TextSecure联系人到现存的TextSecure群组</string>
+  <string name="GroupCreateActivity_cannot_add_non_push_to_existing_group">无法添加非RayMessage联系人到现存的RayMessage群组</string>
   <!--ImportExportActivity-->
   <string name="ImportExportActivity_import">导入</string>
   <string name="ImportExportActivity_export">导出</string>
   <!--ImportFragment-->
   <string name="ImportFragment_import_system_sms_database">导入系统短信数据库？</string>
-  <string name="ImportFragment_this_will_import_messages_from_the_system">系统默认的短信数据库将会被导入TextSecure，如果您已经进行过导入的操作，本次操作可能会导致出现重复的短信。</string>
+  <string name="ImportFragment_this_will_import_messages_from_the_system">系统默认的短信数据库将会被导入RayMessage，如果您已经进行过导入的操作，本次操作可能会导致出现重复的短信。</string>
   <string name="ImportFragment_import">导入</string>
   <string name="ImportFragment_cancel">取消</string>
   <string name="ImportFragment_restore_encrypted_backup">恢复加密备份？</string>
-  <string name="ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys">恢复加密的备份将会完全替代当前的密钥，选项以及短信。您会丢失当前存储于TextSecure的一切，但是已经备份的内容不会被替换。</string>
+  <string name="ImportFragment_restoring_an_encrypted_backup_will_completely_replace_your_existing_keys">恢复加密的备份将会完全替代当前的密钥，选项以及短信。您会丢失当前存储于RayMessage的一切，但是已经备份的内容不会被替换。</string>
   <string name="ImportFragment_restore">还原</string>
   <string name="ImportFragment_import_plaintext_backup">导入明文备份？</string>
   <string name="ImportFragment_this_will_import_messages_from_a_plaintext_backup">这将会导入
@@ -168,27 +168,27 @@
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">多媒体信息</string>
   <!--MessageRecord-->
-  <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">此消息经由旧版本的协议加密，并且已经不再受支持。请要求发送者升级至最新版本的TextSecure，并重新发送这条信息。</string>
+  <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">此消息经由旧版本的协议加密，并且已经不再受支持。请要求发送者升级至最新版本的RayMessage，并重新发送这条信息。</string>
   <!--PassphraseChangeActivity-->
   <string name="PassphraseChangeActivity_passphrases_dont_match_exclamation">口令不符！</string>
   <string name="PassphraseChangeActivity_incorrect_old_passphrase_exclamation">旧密码不正确！</string>
   <!--PassphrasePromptActivity-->
   <string name="PassphrasePromptActivity_enter_passphrase">输入密钥</string>
-  <string name="PassphrasePromptActivity_watermark_content_description">TextSecure 图标</string>
+  <string name="PassphrasePromptActivity_watermark_content_description">RayMessage 图标</string>
   <string name="PassphrasePromptActivity_ok_button_content_description">提交密钥</string>
   <string name="PassphrasePromptActivity_invalid_passphrase_exclamation">不真实的密钥！</string>
   <!--PromptMmsActivity-->
   <string name="PromptMmsActivity_you_must_specify_an_mmsc_url_for_your_carrier">您必须指定彩信服务器（MMSC）地址！</string>
   <string name="PromptMmsActivity_mms_settings_updated">短信设置已更新</string>
-  <string name="PromptMmsActivity_you_can_modify_these_values_from_the_textsecure_settings_menu_at_any_time_">您可以随时在TextSecure的设置菜单里修改这些参数。</string>
+  <string name="PromptMmsActivity_you_can_modify_these_values_from_the_RayMessage_settings_menu_at_any_time_">您可以随时在RayMessage的设置菜单里修改这些参数。</string>
   <!--ReceiveKeyActivity-->
-  <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_different">此人当前签名所使用的密钥与之前所接收到的密钥不一致，这可能是由于某人正试图拦截您的通信，或者此人重新安装TextSecure而有了新密钥。</string>
+  <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_different">此人当前签名所使用的密钥与之前所接收到的密钥不一致，这可能是由于某人正试图拦截您的通信，或者此人重新安装RayMessage而有了新密钥。</string>
   <string name="ReceiveKeyActivity_you_may_wish_to_verify_this_contact">您可能希望验证这个联系人。</string>
   <string name="ReceiveKeyActivity_the_signature_on_this_key_exchange_is_trusted_but">在此密钥交换上签名可信，但是“设置”中的“自动完成密钥交换”已经被您禁用。</string>
   <string name="ReceiveKeyActivity_processing">处理中</string>
   <string name="ReceiveKeyActivity_processing_key_exchange">正在处理密钥交换</string>
   <!--RegistrationActivity-->
-  <string name="RegistrationActivity_connect_with_textsecure">通过TextSecure连接</string>
+  <string name="RegistrationActivity_connect_with_textsecure">通过RayMessage连接</string>
   <string name="RegistrationActivity_select_your_country">选择您的国家</string>
   <string name="RegistrationActivity_you_must_specify_your_country_code">您必须指定您的
 国家代码</string>
@@ -235,12 +235,12 @@
   <string name="RegistrationProgressActivity_youve_already_requested_a_voice_call">近期您已经请求了一个语音呼叫，等待20分钟后才能再次请求。</string>
   <string name="RegistrationProgressActivity_verifying_voice_code">正在验证语音代码...</string>
   <string name="RegistrationProgressActivity_registration_conflict">注册冲突</string>
-  <string name="RegistrationProgressActivity_this_number_is_already_registered_on_a_different">该号码已经在另一个不同的 TextSecure 服务器上注册(CyanogenMod?)，您必须在其他地方反注册后才能在此处注册。</string>
+  <string name="RegistrationProgressActivity_this_number_is_already_registered_on_a_different">该号码已经在另一个不同的 RayMessage 服务器上注册(CyanogenMod?)，您必须在其他地方反注册后才能在此处注册。</string>
   <!--RegistrationService-->
   <string name="RegistrationService_registration_complete">注册已完成</string>
-  <string name="RegistrationService_textsecure_registration_has_successfully_completed">已经成功完成TextSecure注册。</string>
+  <string name="RegistrationService_textsecure_registration_has_successfully_completed">已经成功完成RayMessage注册。</string>
   <string name="RegistrationService_registration_error">注册出现错误</string>
-  <string name="RegistrationService_textsecure_registration_has_encountered_a_problem">TextSecure注册出错。</string>
+  <string name="RegistrationService_textsecure_registration_has_encountered_a_problem">RayMessage注册出错。</string>
   <!--SmsMessageRecord-->
   <string name="SmsMessageRecord_received_corrupted_key_exchange_message">收到损坏的密钥
 交换消息！</string>
@@ -307,7 +307,7 @@
   <!--KeyCachingService-->
   <string name="KeyCachingService_textsecure_passphrase_cached">轻触以开启。</string>
   <string name="KeyCachingService_textsecure_passphrase_cached_with_lock">轻触以开启，或点击锁定以关闭。</string>
-  <string name="KeyCachingService_passphrase_cached">TextSecure 已解锁</string>
+  <string name="KeyCachingService_passphrase_cached">RayMessage 已解锁</string>
   <string name="KeyCachingService_lock">使用密码锁定</string>
   <!--MessageNotifier-->
   <string name="MessageNotifier_d_new_messages">%d 新信息</string>
@@ -334,9 +334,9 @@
   <!--SmsReceiver-->
   <string name="SmsReceiver_currently_unable_to_send_your_sms_message">当前无法发送信息，一旦服务恢复将重新发送。</string>
   <!--QuickResponseService-->
-  <string name="QuickResponseService_sorry_quick_response_is_not_yet_supported_by_textsecure">抱歉，TextSecure目前还不支持快速回复。</string>
+  <string name="QuickResponseService_sorry_quick_response_is_not_yet_supported_by_textsecure">抱歉，RayMessage目前还不支持快速回复。</string>
   <!--auto_initiate_activity-->
-  <string name="auto_initiate_activity__you_have_received_a_message_from_someone_who_supports_textsecure_encrypted_sessions_would_you_like_to_initiate_a_secure_session">您从支持 TextSecure 加密会话的人那里收到一条消息。是否要启动安全会话？</string>
+  <string name="auto_initiate_activity__you_have_received_a_message_from_someone_who_supports_textsecure_encrypted_sessions_would_you_like_to_initiate_a_secure_session">您从支持 RayMessage 加密会话的人那里收到一条消息。是否要启动安全会话？</string>
   <string name="auto_initiate_activity__initiate_exchange">初始化交换</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">旧密码：</string>
@@ -357,7 +357,7 @@
   <!--contact_selection_recent_activity-->
   <string name="contact_selection_recent_activity__no_recent_calls">没有最近呼叫。</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">发送 TextSecure 信息</string>
+  <string name="conversation_activity__type_message_push">发送 RayMessage 信息</string>
   <string name="conversation_activity__type_message_sms_secure">发送安全短信</string>
   <string name="conversation_activity__type_message_sms_insecure">发送不安全的短信</string>
   <string name="conversation_activity__type_message_mms_secure">发送安全彩信</string>
@@ -396,7 +396,7 @@
   <string name="create_passphrase_activity__skip">略过</string>
   <string name="create_passphrase_activity__create">创建</string>
   <!--log_submit_activity-->
-  <string name="log_submit_activity__confirmation">此日志将会公布在互联网上以供TextSecure的参与者查看。在提交前您可以任意编辑下面的日志内容。</string>
+  <string name="log_submit_activity__confirmation">此日志将会公布在互联网上以供RayMessage的参与者查看。在提交前您可以任意编辑下面的日志内容。</string>
   <string name="log_submit_activity__button_cancel">不要提交</string>
   <string name="log_submit_activity__button_ok">提交</string>
   <string name="log_submit_activity__log_fetch_failed">无法获取您设备上的日志，不过您仍然可以以ADB方式来获得您的调试日志。</string>
@@ -411,7 +411,7 @@
   <string name="log_submit_activity__submitting">正在提交</string>
   <string name="log_submit_activity__posting_logs">正在发送日志到 Pastebin …</string>
   <!--database_migration_activity-->
-  <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">您希望将目前已经存在的短信导入至TextSecure的加密数据库吗？</string>
+  <string name="database_migration_activity__would_you_like_to_import_your_existing_text_messages">您希望将目前已经存在的短信导入至RayMessage的加密数据库吗？</string>
   <string name="database_migration_activity__the_default_system_database_will_not_be_modified">默认的系统数据库将不会被修改或改变。</string>
   <string name="database_migration_activity__skip">略过</string>
   <string name="database_migration_activity__import">导入</string>
@@ -427,7 +427,7 @@
   <string name="import_fragment__import_system_sms_database">导入系统短信数据库</string>
   <string name="import_fragment__import_the_database_from_the_default_system">从系统默认的短信应用中导入数据库。</string>
   <string name="import_fragment__import_encrypted_backup">导入已加密的备份</string>
-  <string name="import_fragment__restore_a_previously_exported_encrypted_textsecure_backup">还原之前导出的TextSecure加密备份。</string>
+  <string name="import_fragment__restore_a_previously_exported_encrypted_textsecure_backup">还原之前导出的RayMessage加密备份。</string>
   <string name="import_fragment__import_plaintext_backup">导入明文备份</string>
   <string name="import_fragment__import_a_plaintext_backup_file">
 导入明文备份文件，与\"SMSBackup And Restore\"软件兼容。</string>
@@ -435,10 +435,10 @@
   <!--mms_preferences_activity-->
   <string name="mms_preferences_activity__manual_mms_settings_are_required">您必须手动配置彩信设置。</string>
   <!--prompt_passphrase_activity-->
-  <string name="prompt_passphrase_activity__textsecure_passphrase">TEXTSECURE密码</string>
+  <string name="prompt_passphrase_activity__textsecure_passphrase">RayMessage密码</string>
   <string name="prompt_passphrase_activity__unlock">解锁</string>
   <!--prompt_mms_activity-->
-  <string name="prompt_mms_activity__textsecure_requires_mms_settings_to_deliver_media_and_group_messages">TextSecure需要通过运营商获取您的彩信设置才能接受彩信或组播信息，但是您的设备没有这些信息，可能是由于设备被锁定或者访问受到限制。</string>
+  <string name="prompt_mms_activity__textsecure_requires_mms_settings_to_deliver_media_and_group_messages">RayMessage需要通过运营商获取您的彩信设置才能接受彩信或组播信息，但是您的设备没有这些信息，可能是由于设备被锁定或者访问受到限制。</string>
   <string name="prompt_mms_activity__to_send_media_and_group_messages_click_ok">想发送多媒体和组播信息，需点击“好”来完成所需的设置。您可以通过搜索“您的运营商 APN”（如百度／谷歌：中国移动 APN）来获取这些信息。通常，您只需要设置一次。</string>
   <string name="prompt_mms_activity__mmsc_url_required">MMSC URL (必须):</string>
   <string name="prompt_mms_activity__mms_proxy_host_optional">彩信代理服务器地址(可选)：</string>
@@ -447,7 +447,7 @@
   <string name="receive_key_activity__complete">完成</string>
   <!--registration_activity-->
   <string name="registration_activity__textsecure_can_use_instant_messages_to_avoid_sms_charges_when_communicating_with_other_textsecure_users">
-当与其他TextSecure用户通讯时，TextSecure可以使用即时消息来提高私密性并
+当与其他RayMessage用户通讯时，RayMessage可以使用即时消息来提高私密性并
 避免短信费用。
 要开启此功能，请验证您的国家地区代码和电话号码。</string>
   <string name="registration_activity__your_country">国家或地区</string>
@@ -464,7 +464,7 @@
   <string name="registration_problems__some_third_party_text_messaging_clients_such_as_handcent">
 一些第三方的短信客户端，比如Handcent或GoSMS表现糟糕，
 并会拦截所收到的短信。检查你是否收到以
-“Your TextSecure verification code:”或“您的TextSecure验证码”开头的短信。如果有，你要更改
+“Your RayMessage verification code:”或“您的RayMessage验证码”开头的短信。如果有，你要更改
 这些第三方短信客户端设置以便让验证码通过。</string>
   <string name="registration_problems__incorrect_number">不正确的号码。</string>
   <string name="registration_problems__please_checkt_to_make_sure_you_entered_your_number_correctly">
@@ -473,7 +473,7 @@
 的地区。</string>
   <string name="registration_problems__google_voice">Google 语音。</string>
   <string name="registration_problems__textsecure_will_not_work_with_google_voice_numbers">
-TextSecure无法使用Google语音号码。</string>
+RayMessage无法使用Google语音号码。</string>
   <!--registration_progress_activity-->
   <string name="registration_progress_activity__voice_verification">语音验证</string>
   <string name="registration_progress_activity__textsecure_can_also_call_you_to_verify_your_number">
@@ -484,20 +484,20 @@ Verification也可以通过拨打您的电话号码来进行验证。点击“�
   <string name="registration_progress_activity__edit_number">编辑号码</string>
   <string name="registration_progress_activity__connectivity_error">连接错误。</string>
   <string name="registration_progress_activity__textsecure_was_unable_to_connect_to_the_push_service">
-TextSecure无法连接推送服务器。</string>
+RayMessage无法连接推送服务器。</string>
   <string name="registration_progress_activity__some_possible_problems_include">一些可能的问题
 包括：</string>
   <string name="registration_progress_activity__no_network_connectivity">无网络
 连接。</string>
   <string name="registration_progress_activity__your_device_needs_network_connectivity">您的
-设备需要可用的网络连接来使用TextSecure的功能。请检查并确保
+设备需要可用的网络连接来使用RayMessage的功能。请检查并确保
 当前已经连接到3G或Wi-Fi。</string>
   <string name="registration_progress_activity__restrictive_firewall">受限防火墙。</string>
   <string name="registration_progress_activity__if_you_are_connected_via_wifi_its_possible_that_there_is_a_firewall">
 如果您通过Wi-Fi连接，可能是防火墙屏蔽了到
-TextSecure服务器的连接，请尝试其他的网络或使用移动数据。</string>
+RayMessage服务器的连接，请尝试其他的网络或使用移动数据。</string>
   <string name="registration_progress_activity__textsecure_will_now_automatically_verify_your_number_with_a_confirmation_sms_message">
-TextSecure将会通过短信自动验证您的手机号码。</string>
+RayMessage将会通过短信自动验证您的手机号码。</string>
   <string name="registration_progress_activity__connecting">连接中……</string>
   <string name="registration_progress_activity__waiting_for_sms_verification">等待短信
 验证…</string>
@@ -505,7 +505,7 @@ TextSecure将会通过短信自动验证您的手机号码。</string>
   <string name="registration_progress_activity__this_couild_take_a_moment_please_be_patient">这需要一些时间，
 请保持耐心，验证结束后会通知您。</string>
   <string name="registration_progress_activity__textsecure_timed_out_while_waiting_for_a_verification_sms_message">
-TextSecure 在等待短信验证时超时。</string>
+RayMessage 在等待短信验证时超时。</string>
   <string name="registration_progress_activity__sms_verification_failed">短信验证
 失败。</string>
   <string name="registration_progress_activity__generating_keys">正在生成密钥…</string>
@@ -530,7 +530,7 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="AndroidManifest__enter_passphrase">输入密钥</string>
   <string name="AndroidManifest__select_contacts">选择联系人</string>
   <string name="AndroidManifest__select_contact">选择联系人</string>
-  <string name="AndroidManifest__textsecure_detected">已检测到TextSecure</string>
+  <string name="AndroidManifest__textsecure_detected">已检测到RayMessage</string>
   <string name="AndroidManifest__public_identity_key">身份公钥</string>
   <string name="AndroidManifest__change_passphrase"> 修改密码</string>
   <string name="AndroidManifest__verify_session">验证会话</string>
@@ -546,8 +546,8 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="preferences__push_sms_category">推送和短信</string>
   <string name="preferences__pref_all_sms_title">获得所有的短信</string>
   <string name="preferences__pref_all_mms_title">获得所有的彩信</string>
-  <string name="preferences__use_textsecure_for_viewing_and_storing_all_incoming_text_messages">使用 TextSecure 查看和存储接收到的所有文本消息</string>
-  <string name="preferences__use_textsecure_for_viewing_and_storing_all_incoming_multimedia_messages">使用 TextSecure 查看和存储接收到的所有多媒体消息</string>
+  <string name="preferences__use_textsecure_for_viewing_and_storing_all_incoming_text_messages">使用 RayMessage 查看和存储接收到的所有文本消息</string>
+  <string name="preferences__use_textsecure_for_viewing_and_storing_all_incoming_multimedia_messages">使用 RayMessage 查看和存储接收到的所有多媒体消息</string>
   <string name="preferences__input_settings">输入设置</string>
   <string name="preferences__enable_enter_key_title">开启进入密钥</string>
   <string name="preferences__replace_smiley_with_enter_key">使用输入的密钥替换相似的密钥</string>
@@ -624,19 +624,19 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="preferences__default">默认</string>
   <string name="preferences__language">语言</string>
   <string name="preferences__make_default_sms_app">设置为默认的短信应用</string>
-  <string name="preferences__make_textsecure_the_default_sms_mms_app">将TextSecure设置为默认的短信／彩信应用程序。</string>
+  <string name="preferences__make_textsecure_the_default_sms_mms_app">将RayMessage设置为默认的短信／彩信应用程序。</string>
   <string name="preferences__use_data_channel">推送信息</string>
   <string name="preferences__use_the_data_channel_for_communication_with_other_textsecure_users">
-与其他TextSecure用户通讯时使用数据链接以提高私密性并避免短信费用</string>
+与其他RayMessage用户通讯时使用数据链接以提高私密性并避免短信费用</string>
   <string name="preferences__allow_sms_fallback">允许外发短信至</string>
-  <string name="preferences__allow_sms_fallback_disabled_reason">TextSecure目前是您默认的短信应用，如果您想修改，请先将另一个应用设定为默认的短信应用。</string>
+  <string name="preferences__allow_sms_fallback_disabled_reason">RayMessage目前是您默认的短信应用，如果您想修改，请先将另一个应用设定为默认的短信应用。</string>
   <string name="preferences__refresh_push_directory">刷新推送目录</string>
   <string name="preferences__submit_debug_log">提交调试日志</string>
-  <string name="preferences__sms_outgoing_push_users">TextSecure 用户</string>
+  <string name="preferences__sms_outgoing_push_users">RayMessage 用户</string>
   <string name="preferences__sms_fallback_push_users_ask">(先询问)</string>
   <string name="preferences__sms_outgoing_push_users_description">如果通讯中断，则以加密方式发送短信</string>
   <string name="preferences__sms_fallback_ask_fallback">发送短信前先询问</string>
-  <string name="preferences__sms_fallback_non_push_users">非 TextSecure  用户</string>
+  <string name="preferences__sms_fallback_non_push_users">非 RayMessage  用户</string>
   <string name="preferences__sms_fallback_nobody">没有人</string>
   <!--****************************************-->
   <!--menus-->
@@ -644,7 +644,7 @@ TextSecure 在等待短信验证时超时。</string>
   <!--contact_selection_list-->
   <string name="contact_selection_list__menu_select_all">全选</string>
   <string name="contact_selection_list__menu_unselect_all">全部取消选择</string>
-  <string name="contact_selection_list__header_textsecure_users">TEXTSECURE 用户</string>
+  <string name="contact_selection_list__header_textsecure_users">RayMessage 用户</string>
   <string name="contact_selection_list__header_other">所有联系人</string>
   <string name="contact_selection_list__unknown_contact">新信息至…</string>
   <!--contact_selection-->
@@ -653,7 +653,7 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="push_directory__menu_refresh">刷新联系人列表</string>
   <!--conversation_button_context-->
   <string name="conversation_button_context__menu_send_unencrypted">发送未加密</string>
-  <string name="conversation_button_context__send_textsecure_message">发送 TextSecure 信息</string>
+  <string name="conversation_button_context__send_textsecure_message">发送 RayMessage 信息</string>
   <string name="conversation_button_context__send_secure_sms">发送安全短信</string>
   <string name="conversation_button_context__send_insecure_sms">发送不安全的短信</string>
   <string name="conversation_button_context__send_secure_mms">发送安全彩信</string>
@@ -709,10 +709,10 @@ TextSecure 在等待短信验证时超时。</string>
   <string name="verify_keys__menu_verified">已验证</string>
   <!--reminder_header-->
   <string name="reminder_header_sms_default_title">使用默认的SMS应用程序？</string>
-  <string name="reminder_header_sms_default_text">TextSecure 目前不是您默认的短信应用。</string>
+  <string name="reminder_header_sms_default_text">RayMessage 目前不是您默认的短信应用。</string>
   <string name="reminder_header_sms_import_title">导入系统短信？</string>
-  <string name="reminder_header_sms_import_text">TextSecure 可以将您手机中的短信息复制到加密的数据库中。</string>
-  <string name="reminder_header_push_title">启用 TextSecure 信息？</string>
+  <string name="reminder_header_sms_import_text">RayMessage 可以将您手机中的短信息复制到加密的数据库中。</string>
+  <string name="reminder_header_push_title">启用 RayMessage 信息？</string>
   <string name="reminder_header_push_text">顷刻投递，私密存储，并且没有短信费用。</string>
   <!--persional_info_activity-->
   <string name="personal_info_avatar">用户头像</string>

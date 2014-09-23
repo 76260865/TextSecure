@@ -88,10 +88,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("/home/real123/Documents/keystore/keystore.jks")
-            storePassword "111111"
-            keyAlias "hewei"
-            keyPassword "111111"
+            storeFile file("keystore_release.jks")
+            storePassword "1qa2ws3ed@raycom.cn"
+            keyAlias "raymessage_release.keystore"
+            keyPassword "1qa2ws3ed@raycom.cn"
         }
     }
     buildTypes {
