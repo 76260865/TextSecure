@@ -30,6 +30,12 @@
                             android:summary="@string/preferences__request_a_delivery_report_for_each_sms_message_you_send"
                             android:title="@string/preferences__sms_delivery_reports" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preference_person_info_category">
+        <Preference
+            android:title="@string/preference_person_info_setting">
+            <intent android:action="android.intent.action.ViewPersonInfo" />
+        </Preference>
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/preferences__notifications">
         <CheckBoxPreference android:key="pref_key_enable_notifications"
                             android:title="@string/preferences__notifications"

@@ -48,6 +48,7 @@ import static org.whispersystems.textsecure.push.PushMessageProtos.PushMessageCo
 
 public class PushReceiver {
 
+    private static final String TAG = "PushReceiver";
   public static final int RESULT_OK                = 0;
   public static final int RESULT_NO_SESSION        = 1;
   public static final int RESULT_DECRYPT_FAILED    = 2;
@@ -104,6 +105,7 @@ public class PushReceiver {
         PushServiceSocket socket = PushServiceSocketFactory.create(context);
         ContactsInfo contactsInfo = socket.getContactsInfo(message.getSource());
         if (contactsInfo != null) {
+            Log.d(TAG, "handleReceiveUpdateUserInfoMessage message.getSource()" + message.getSource());
             Recipients recipients = RecipientFactory.getRecipientsFromMessage(context, message, false);
             RecipientFactory.clearCache(recipients.getPrimaryRecipient());
             ContentValues values = new ContentValues();

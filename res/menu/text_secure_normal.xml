@@ -7,7 +7,7 @@
 
     <item android:title="personal info setting"
         android:id="@+id/menu_personal_info_settings"
-        android:showAsAction="always"
+        android:visible="false"
         android:icon="@drawable/ic_contact_picture" />
 
     <item android:title="@string/text_secure_normal__menu_new_group"

@@ -145,9 +145,9 @@ public class SmsSender {
       unregisterForRadioChanges();
     } else if (result == SmsManager.RESULT_ERROR_NO_SERVICE || result == SmsManager.RESULT_ERROR_RADIO_OFF) {
       DatabaseFactory.getSmsDatabase(context).markAsOutbox(messageId);
-      toastHandler
-        .obtainMessage(0, context.getString(R.string.SmsReceiver_currently_unable_to_send_your_sms_message))
-        .sendToTarget();
+//      toastHandler
+//        .obtainMessage(0, context.getString(R.string.SmsReceiver_currently_unable_to_send_your_sms_message))
+//        .sendToTarget();
       registerForRadioChanges();
     } else {
       long threadId         = DatabaseFactory.getSmsDatabase(context).getThreadIdForMessage(messageId);

@@ -732,5 +732,7 @@ TextSecure 在等待短信验证时超时。</string>
         <item>1</item>
         <item>0</item>
     </string-array>
+    <string name="preference_person_info_category">个人信息</string>
+    <string name="preference_person_info_setting">个人信息设置</string>
    <!--EOF-->
 </resources>

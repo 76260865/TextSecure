@@ -125,7 +125,7 @@ public class ContactsInfoDatabase {
     }
 
     public void updateContactInfo(ContentValues values, String number) {
-        Log.d(TAG, "begin insertOrUpdateIdentity.");
+        Log.d(TAG, "begin insertOrUpdateIdentity. number: " + number);
         SQLiteDatabase localDb = dbHelper.getWritableDatabase();
         int i = localDb.update(TABLE_NAME, values, NUMBER_COLUMN + " = '" + number + "'", null);
         Log.d(TAG, "finished insertOrUpdateIdentity. i: " + i);

@@ -47,11 +47,6 @@ public class PersonalInfoActivity extends PreferenceActivity implements OnShared
     }
 
     @Override
-    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        return super.onPreferenceTreeClick(preferenceScreen, preference);
-    }
-
-    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key) {
         boolean blGender=true;
         if (key.equals("pref_gender")){
@@ -60,7 +55,6 @@ public class PersonalInfoActivity extends PreferenceActivity implements OnShared
                 mGenderPreference.setSummary(getString(R.string.personal_info_gender_male));
             }else{
                 blGender=false;
-                sharedPreferences.getBoolean(key,true);
                 mGenderPreference.setSummary(getString(R.string.personal_info_gender_female));
             }
 

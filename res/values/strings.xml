@@ -871,4 +871,6 @@
     <!-- EOF -->
 
     <string name="personal_info_activity__choose_image">Choose Image</string>
+    <string name="preference_person_info_category">Personal Info</string>
+    <string name="preference_person_info_setting">Personal Info Setting</string>
 </resources>

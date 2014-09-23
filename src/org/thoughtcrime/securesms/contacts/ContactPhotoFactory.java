@@ -14,6 +14,9 @@ import android.util.Log;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.recipients.Recipient;
+import org.thoughtcrime.securesms.recipients.RecipientFactory;
+import org.thoughtcrime.securesms.recipients.RecipientFormattingException;
+import org.thoughtcrime.securesms.recipients.Recipients;
 import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.LRUCache;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
@@ -124,10 +127,10 @@ public class ContactPhotoFactory {
       Bitmap contactPhoto;
       contactPhoto = retrieveAvatar(context, number);
       if (contactPhoto != null) {
-          Log.d("ContactPhotoFactory", "get the contact photo from server");
           return contactPhoto;
       }
 
+      Log.d("ContactPhotoFactory", "get the contact photo from default or phone");
       // get photo from local if there is not exits in our server
     InputStream inputStream = ContactsContract.Contacts.openContactPhotoInputStream(context.getContentResolver(), uri);
     if (inputStream == null) contactPhoto = ContactPhotoFactory.getDefaultContactPhoto(context);
@@ -154,12 +157,12 @@ public class ContactPhotoFactory {
             String localNumber = TextSecurePreferences.getLocalNumber(context);
             phoneNumber = PhoneNumberFormatter.formatNumber(number, localNumber);
             cursor = ContactsInfoDatabase.getInstance(context).query(phoneNumber);
-            Log.d("ContactPhotoFactory","cursor from db" + cursor== null ? "": "not null");
+            Log.d("ContactPhotoFactory",cursor== null ? "": "not null");
             if (cursor != null && cursor.moveToFirst()) {
                 byte[] avatar = cursor.getBlob(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AVATAR_COLUMN));
                 if (avatar != null && avatar.length > 0) {
                     Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-                        Log.d("ContactPhotoFactory","retrieveAvatar from db");
+                    Log.d("ContactPhotoFactory","retrieveAvatar from db");
                     return bitmap;
                 }
             }
@@ -183,7 +186,7 @@ public class ContactPhotoFactory {
                     contactsInfo = getContactsInfo(context, socket, number);
                     if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
                         Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
-                                + contactsInfo.getNumber());
+                                + contactsInfo.getNumber() + " finalPhoneNumber: " + finalPhoneNumber);
                         File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
                         if (avatar.exists() && avatar.length() > 0) {
                             fileInputStream = new FileInputStream(avatar);
@@ -191,6 +194,9 @@ public class ContactPhotoFactory {
                             ContentValues values = new ContentValues();
                             values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
                             ContactsInfoDatabase.getInstance(context).updateContactInfo(values, finalPhoneNumber);
+                            Recipients recipients = RecipientFactory.getRecipientsFromString(context, finalPhoneNumber, false);
+                            Log.d("ContactPhotoFactory", "Recipients is : " + recipients.getPrimaryRecipient().getNumber());
+                            RecipientFactory.clearCache(recipients.getPrimaryRecipient());
                             Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
                         }
                     }
@@ -199,6 +205,8 @@ public class ContactPhotoFactory {
                 } catch (InvalidNumberException e) {
                     Log.d("ContactPhotoFactory", e.getMessage());
                 } catch (IOException e) {
+                    Log.d("ContactPhotoFactory", e.getMessage());
+                } catch (RecipientFormattingException e) {
                     Log.d("ContactPhotoFactory", e.getMessage());
                 } finally {
                     if (fileInputStream != null) {
