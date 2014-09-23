@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Whisper Systems
+ * Copyright (C) 2012 Ray Message
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
