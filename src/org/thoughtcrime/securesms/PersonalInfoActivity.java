@@ -26,7 +26,7 @@ import android.widget.Toast;
 /**
  * Created by Wei.He on 9/10/14.
  */
-public class PersonalInfoActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener{
+public class PersonalInfoActivity extends PreferenceActivity {
     private static final int SELECT_PICTURE = 2;
 
     private ImageView mImageContactPhoto;
@@ -39,31 +39,37 @@ public class PersonalInfoActivity extends PreferenceActivity implements OnShared
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.personal_info_preferences);
         mAvatarPreference = (AvatarPreference) findPreference("pref_avatar");
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        prefs.registerOnSharedPreferenceChangeListener(this);
         mGenderPreference = (ListPreference) findPreference("pref_gender");
+        initializeListSummary(mGenderPreference);
+        mGenderPreference.setOnPreferenceChangeListener(new OnGenderSharedPreferenceChangeListener());
+
         mAvatarPreference.setOnPreferenceClickListener(mAvatarPrefClickListener);
         initAvatar();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,String key) {
-        boolean blGender=true;
-        if (key.equals("pref_gender")){
-            if(mGenderPreference.getValue().equals("1")){
-                blGender=true;
-                mGenderPreference.setSummary(getString(R.string.personal_info_gender_male));
-            }else{
-                blGender=false;
-                mGenderPreference.setSummary(getString(R.string.personal_info_gender_female));
+    private class OnGenderSharedPreferenceChangeListener implements Preference.OnPreferenceChangeListener {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            boolean blGender = true;
+            if (value.equals("1")) {
+                blGender = true;
+                preference.setSummary(getString(R.string.personal_info_gender_male));
+            } else {
+                blGender = false;
+                preference.setSummary(getString(R.string.personal_info_gender_female));
             }
 
             Intent intent = new Intent(getApplicationContext(), RegistrationService.class);
             intent.setAction(RegistrationService.UPDATE_CONTACTS_INFO_ACTION);
-            intent.putExtra(key,blGender);
-            intent.putExtra("pref_key",key);
+            intent.putExtra("pref_gender", blGender);
+            intent.putExtra("pref_key", "pref_gender");
             getApplicationContext().startService(intent);
+            return true;
         }
+    }
+
+    private void initializeListSummary(ListPreference pref) {
+        pref.setSummary(pref.getEntry());
     }
 
     private void initAvatar() {

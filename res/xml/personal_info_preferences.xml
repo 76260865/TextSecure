@@ -10,7 +10,6 @@
     <ListPreference
         android:key="pref_gender"
         android:title="@string/personal_info_gender"
-        android:summary=""
         android:dialogTitle="@string/personal_info_gender_dialog_title"
         android:entries="@array/gender_opts"
         android:entryValues="@array/gender_opts_values"/>

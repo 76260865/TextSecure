@@ -723,15 +723,6 @@ RayMessage 在等待短信验证时超时。</string>
   <string name="personal_info_signature">签名</string>
   <string name="personal_info_gender_male">男</string>
   <string name="personal_info_gender_female">女</string>
-  <string-array name="gender_opts">
-     <item>男</item>
-     <item>女</item>
-  </string-array>
-
-    <string-array name="gender_opts_values">
-        <item>1</item>
-        <item>0</item>
-    </string-array>
     <string name="preference_person_info_category">个人信息</string>
     <string name="preference_person_info_setting">个人信息设置</string>
    <!--EOF-->
