@@ -232,6 +232,11 @@
         </intent-filter>
     </activity>
 
+    <activity android:name=".RecipientInoActivity"
+        android:label="@string/app_name"
+        android:launchMode="singleTask">
+    </activity>
+
     <service android:enabled="true" android:name=".service.GcmRegistrationService"/>
     <service android:enabled="true" android:name=".service.ApplicationMigrationService"/>
     <service android:enabled="true" android:name=".service.KeyCachingService"/>
