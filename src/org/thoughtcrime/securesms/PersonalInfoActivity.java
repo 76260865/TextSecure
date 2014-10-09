@@ -1,27 +1,21 @@
 package org.thoughtcrime.securesms;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.ListPreference;
-import android.preference.PreferenceScreen;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.widget.ImageView;
 import org.thoughtcrime.securesms.service.RegistrationService;
-import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.preferences.AvatarPreference;
-import org.thoughtcrime.securesms.util.BitmapUtil;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
-import org.thoughtcrime.securesms.R;
-import java.lang.Override;
-import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by Wei.He on 9/10/14.
@@ -73,16 +67,10 @@ public class PersonalInfoActivity extends PreferenceActivity {
     }
 
     private void initAvatar() {
-        Cursor cursor = ContactsInfoDatabase.getInstance(getApplicationContext())
-                .query(TextSecurePreferences.getLocalNumber(this));
-        if (cursor != null && cursor.moveToFirst()) {
-            byte[] avatar = cursor.getBlob(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AVATAR_COLUMN));
-            if (avatar != null && avatar.length > 0) {
-                Bitmap bitmap = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-                mAvatarPreference.setAvatarBitmap(bitmap);
-            }
-            cursor.close();
-        }
+        String fileName = TextSecurePreferences.getLocalNumber(this);
+        File file = new File(getFilesDir(), fileName + ".tmp");
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+        mAvatarPreference.setAvatarBitmap(bitmap);
     }
 
     private Preference.OnPreferenceClickListener mAvatarPrefClickListener = new Preference.OnPreferenceClickListener() {
@@ -109,10 +97,23 @@ public class PersonalInfoActivity extends PreferenceActivity {
             Bitmap bitmap = data.getParcelableExtra("data");
             if (bitmap != null) {
                 mAvatarPreference.updateAvatar(bitmap);
-                ContentValues values = new ContentValues();
-                values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
-                ContactsInfoDatabase.getInstance(getApplicationContext())
-                        .updateContactInfo(values, TextSecurePreferences.getLocalNumber(this));
+
+                String fileName = TextSecurePreferences.getLocalNumber(this);
+                File file = new File(getFilesDir(), fileName + ".tmp");
+                FileOutputStream outputStream = null;
+                try {
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    outputStream = new FileOutputStream(file);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+                    outputStream.flush();;
+                    outputStream.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
