@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ContactPhotoFactory {
 
@@ -47,6 +49,8 @@ public class ContactPhotoFactory {
 
   private static final Map<Uri,Bitmap> localUserContactPhotoCache =
       Collections.synchronizedMap(new LRUCache<Uri,Bitmap>(2));
+
+    private static Executor executor = Executors.newSingleThreadExecutor();
 
   private static final String[] CONTENT_URI_PROJECTION = new String[] {
     ContactsContract.Contacts._ID,
@@ -173,54 +177,64 @@ public class ContactPhotoFactory {
                 cursor.close();
             }
         }
-
-        final String finalPhoneNumber = phoneNumber;
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // retrieve the avatar from server if not exist in db
-                PushServiceSocket socket = PushServiceSocketFactory.create(context);
-                FileInputStream fileInputStream = null;
-                ContactsInfo contactsInfo;
-                try {
-                    contactsInfo = getContactsInfo(context, socket, number);
-                    if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
-                        Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
-                                + contactsInfo.getNumber() + " finalPhoneNumber: " + finalPhoneNumber);
-                        File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
-                        if (avatar.exists() && avatar.length() > 0) {
-                            fileInputStream = new FileInputStream(avatar);
-                            Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
-                            ContentValues values = new ContentValues();
-                            values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
-                            ContactsInfoDatabase.getInstance(context).updateContactInfo(values, finalPhoneNumber);
-                            Recipients recipients = RecipientFactory.getRecipientsFromString(context, finalPhoneNumber, false);
-                            Log.d("ContactPhotoFactory", "Recipients is : " + recipients.getPrimaryRecipient().getNumber());
-                            RecipientFactory.clearCache(recipients.getPrimaryRecipient());
-                            Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
-                        }
-                    }
-                } catch (FileNotFoundException e) {
-                    Log.d("ContactPhotoFactory", e.getMessage());
-                } catch (InvalidNumberException e) {
-                    Log.d("ContactPhotoFactory", e.getMessage());
-                } catch (IOException e) {
-                    Log.d("ContactPhotoFactory", e.getMessage());
-                } catch (RecipientFormattingException e) {
-                    Log.d("ContactPhotoFactory", e.getMessage());
-                } finally {
-                    if (fileInputStream != null) {
-                        try {
-                            fileInputStream.close();
-                        } catch (IOException e) {
-                            Log.d("ContactPhotoFactory", e.getMessage());
-                        }
-                    }
-                }
-            }
-        });
-        thread.start();
+        executor.execute(new AvatarRunnable(context, number, phoneNumber));
 
         return null;
+    }
+
+    private static class AvatarRunnable implements Runnable {
+        private Context context;
+        private String number;
+        private String phoneNumber;
+
+        public AvatarRunnable(Context context, String number, String phoneNumber) {
+            this.context = context;
+            this.number = number;
+            this.phoneNumber = phoneNumber;
+        }
+
+        @Override
+        public void run() {
+            // retrieve the avatar from server if not exist in db
+            PushServiceSocket socket = PushServiceSocketFactory.create(context);
+            FileInputStream fileInputStream = null;
+            ContactsInfo contactsInfo;
+            try {
+                contactsInfo = getContactsInfo(context, socket, number);
+                if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
+                    Log.d("ContactPhotoFactory", "contactsInfo:" + contactsInfo + " number : "
+                            + contactsInfo.getNumber() + " phoneNumber: " + phoneNumber);
+                    File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
+                    if (avatar.exists() && avatar.length() > 0) {
+                        fileInputStream = new FileInputStream(avatar);
+                        Bitmap bitmap = BitmapFactory.decodeStream(fileInputStream);
+                        ContentValues values = new ContentValues();
+                        values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
+                        ContactsInfoDatabase.getInstance(context).updateContactInfo(values, phoneNumber);
+                        Recipients recipients = RecipientFactory.getRecipientsFromString(context, phoneNumber, false);
+                        Log.d("ContactPhotoFactory", "Recipients is : " + recipients.getPrimaryRecipient().getNumber());
+                        RecipientFactory.clearCache(recipients.getPrimaryRecipient());
+                        Log.d("ContactPhotoFactory", "updateContactInfo with avatar");
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                Log.d("ContactPhotoFactory", e.getMessage());
+            } catch (InvalidNumberException e) {
+                Log.d("ContactPhotoFactory", e.getMessage());
+            } catch (IOException e) {
+                Log.d("ContactPhotoFactory", e.getMessage());
+            } catch (RecipientFormattingException e) {
+                Log.d("ContactPhotoFactory", e.getMessage());
+            } finally {
+                if (fileInputStream != null) {
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        Log.d("ContactPhotoFactory", e.getMessage());
+                    }
+                }
+                context = null;
+            }
+        }
     }
 }
