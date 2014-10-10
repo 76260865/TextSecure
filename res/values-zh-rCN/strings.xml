@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">RayMessage</string>
+  <string name="app_name">瑞信</string>
   <string name="yes">是</string>
   <string name="no">否</string>
   <string name="delete">删除</string>
@@ -723,7 +723,14 @@ RayMessage 在等待短信验证时超时。</string>
   <string name="personal_info_signature">签名</string>
   <string name="personal_info_gender_male">男</string>
   <string name="personal_info_gender_female">女</string>
-    <string name="preference_person_info_category">个人信息</string>
-    <string name="preference_person_info_setting">个人信息设置</string>
+  <string name="preference_person_info_category">个人信息</string>
+  <string name="preference_person_info_setting">个人信息设置</string>
+
+  <string name="recipient_info_avatar">用户头像</string>
+  <string name="recipient_info_gender">性别： </string>
+  <string name="recipient_info_age">年龄： </string>
+  <string name="recipient_info_name">姓名： </string>
+  <string name="recipient_info_signature">签名： </string>
+  <string name="recipient_info_send_msg_btn">发送消息</string>
    <!--EOF-->
 </resources>

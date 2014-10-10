@@ -16,6 +16,7 @@
  */
 package org.thoughtcrime.securesms;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -107,10 +108,14 @@ public class NewConversationActivity extends PassphraseRequiredSherlockFragmentA
     contactsFragment = (PushContactSelectionListFragment) getSupportFragmentManager().findFragmentById(R.id.contact_selection_list_fragment);
     contactsFragment.setOnContactSelectedListener(new PushContactSelectionListFragment.OnContactSelectedListener() {
       @Override
-      public void onContactSelected(ContactData contactData) {
-        Log.i(TAG, "Choosing contact from list.");
-        Recipients recipients = contactDataToRecipients(contactData);
-        openNewConversation(recipients);
+      public void onContactSelected(ContactData contactData,int type) {
+          Log.i(TAG, "Choosing contact from list.");
+          Recipients recipients = contactDataToRecipients(contactData);
+          if (type != ContactsDatabase.PUSH_TYPE) {
+              openNewConversation(recipients, ConversationActivity.class);
+          } else {
+              openNewConversation(recipients, RecipientInoActivity.class);
+          }
       }
     });
   }
@@ -159,9 +164,9 @@ public class NewConversationActivity extends PassphraseRequiredSherlockFragmentA
     return recipients;
   }
 
-  private void openNewConversation(Recipients recipients) {
+  private void openNewConversation(Recipients recipients,final Class<?> targetClass) {
     if (recipients != null) {
-      Intent intent = new Intent(this, ConversationActivity.class);
+      Intent intent = new Intent(this, targetClass);
       intent.putExtra(ConversationActivity.RECIPIENTS_EXTRA, recipients.toIdString());
       intent.putExtra(ConversationActivity.MASTER_SECRET_EXTRA, masterSecret);
       intent.putExtra(ConversationActivity.DRAFT_TEXT_EXTRA, getIntent().getStringExtra(ConversationActivity.DRAFT_TEXT_EXTRA));

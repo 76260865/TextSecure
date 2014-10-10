@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -54,6 +55,9 @@ public class TextItemPreference extends EditTextPreference {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object o) {
+            if (null==o || TextUtils.isEmpty(o.toString()) || "pref_age".equals(getKey())) {
+                return false;
+            }
             mTxtView.setText(o.toString());
             uploadContactsInfo(getKey());
             return true;
