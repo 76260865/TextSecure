@@ -8,7 +8,7 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingLeft="20dp">
+        android:paddingLeft="10dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -17,7 +17,7 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="100dp"
+                android:layout_height="85dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -25,7 +25,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="用户头像"
+                    android:text="@string/recipient_info_avatar"
                     android:textSize="18sp" />
 
                 <ImageView
@@ -51,7 +51,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="性别:"
+                    android:text="@string/recipient_info_gender"
                     android:textSize="18sp" />
 
                 <TextView
@@ -74,7 +74,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="年龄:"
+                    android:text="@string/recipient_info_age"
                     android:textSize="18sp" />
 
                 <TextView
@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="姓名:"
+                    android:text="@string/recipient_info_name"
                     android:textSize="18sp" />
 
                 <TextView
@@ -120,7 +120,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="签名:"
+                    android:text="@string/recipient_info_signature"
                     android:textSize="18sp" />
 
                 <TextView
@@ -138,10 +138,14 @@
             <Button
                 android:id="@+id/send_message_button"
                 android:layout_width="200dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
                 android:layout_marginTop="20dp"
-                android:text="发送消息"
+                android:layout_marginBottom="15dp"
+                android:textColor="@color/white"
+                android:text="@string/recipient_info_send_msg_btn"
+                android:background="@drawable/btn_backgroud"
                 android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>

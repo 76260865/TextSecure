@@ -126,7 +126,7 @@ public class PushContactSelectionListFragment extends    Fragment
       selectedContacts.put(contactData.id, contactData);
     }
     if (onContactSelectedListener != null) {
-      onContactSelectedListener.onContactSelected(contactData);
+        onContactSelectedListener.onContactSelected(contactData, data.type);
     }
   }
 
@@ -242,6 +242,6 @@ public class PushContactSelectionListFragment extends    Fragment
   }
 
   public interface OnContactSelectedListener {
-    public void onContactSelected(ContactData contactData);
+      public void onContactSelected(ContactData contactData, int type);
   }
 }

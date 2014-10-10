@@ -96,7 +96,7 @@ public class PushContactSelectionActivity extends PassphraseRequiredSherlockFrag
     contactsFragment.setMultiSelect(true);
     contactsFragment.setOnContactSelectedListener(new PushContactSelectionListFragment.OnContactSelectedListener() {
       @Override
-      public void onContactSelected(ContactData contactData) {
+      public void onContactSelected(ContactData contactData, int type) {
         Log.i(TAG, "Choosing contact from list.");
       }
     });

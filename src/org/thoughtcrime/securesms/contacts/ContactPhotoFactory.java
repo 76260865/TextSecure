@@ -139,7 +139,7 @@ public class ContactPhotoFactory {
     return contactPhoto;
   }
 
-    private static ContactsInfo getContactsInfo(Context context, PushServiceSocket socket, String number) throws InvalidNumberException {
+    public static ContactsInfo getContactsInfo(Context context, PushServiceSocket socket, String number) throws InvalidNumberException {
         String localNumber = TextSecurePreferences.getLocalNumber(context);
         if (!TextUtils.isEmpty(localNumber)) {
             String phoneNumber = PhoneNumberFormatter.formatNumber(number, localNumber);
