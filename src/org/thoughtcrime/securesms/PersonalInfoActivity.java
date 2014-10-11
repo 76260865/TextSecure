@@ -10,8 +10,9 @@ import android.preference.ListPreference;
 import android.widget.ImageView;
 import org.thoughtcrime.securesms.service.RegistrationService;
 import org.thoughtcrime.securesms.preferences.AvatarPreference;
+import org.thoughtcrime.securesms.preferences.TextItemPreference;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
-
+import android.text.InputFilter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,6 +28,9 @@ public class PersonalInfoActivity extends PreferenceActivity {
 
     private AvatarPreference mAvatarPreference;
     private ListPreference mGenderPreference;
+    private TextItemPreference mAgePreference;
+    private TextItemPreference mSignPreference;
+    private TextItemPreference mNamePreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,10 @@ public class PersonalInfoActivity extends PreferenceActivity {
         addPreferencesFromResource(R.xml.personal_info_preferences);
         mAvatarPreference = (AvatarPreference) findPreference("pref_avatar");
         mGenderPreference = (ListPreference) findPreference("pref_gender");
+        mAgePreference = (TextItemPreference) findPreference("pref_age");
+        mNamePreference=(TextItemPreference)findPreference("pref_name");
+        mSignPreference = (TextItemPreference) findPreference("pref_signature");
+        setFilter();
         initializeListSummary(mGenderPreference);
         mGenderPreference.setOnPreferenceChangeListener(new OnGenderSharedPreferenceChangeListener());
 
@@ -41,6 +49,19 @@ public class PersonalInfoActivity extends PreferenceActivity {
         initAvatar();
     }
 
+    private void setFilter() {
+        mAgePreference.getEditText().setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(2)
+        });
+
+        mNamePreference.getEditText().setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(5)
+        });
+
+       /* mSignPreference.getEditText().setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(140)
+        });*/
+    }
     private class OnGenderSharedPreferenceChangeListener implements Preference.OnPreferenceChangeListener {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
