@@ -100,8 +100,8 @@ public class PersonalInfoActivity extends PreferenceActivity {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             intent.putExtra("crop", "true");
-            intent.putExtra("outputX", 100);
-            intent.putExtra("outputY", 100);
+            intent.putExtra("outputX", 50);
+            intent.putExtra("outputY", 50);
             intent.putExtra("aspectX", 1);
             intent.putExtra("aspectY", 1);
             intent.putExtra("return-data", true);
