@@ -55,7 +55,7 @@ public class TextItemPreference extends EditTextPreference {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object o) {
-            if (null==o || TextUtils.isEmpty(o.toString()) || "pref_age".equals(getKey())) {
+            if (TextUtils.isEmpty(o.toString()) && "pref_age".equals(getKey())) {
                 return false;
             }
             mTxtView.setText(o.toString());
