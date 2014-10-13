@@ -11,12 +11,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import org.whispersystems.textsecure.util.PhoneNumberFormatter;
 import org.thoughtcrime.securesms.ConversationActivity;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.contacts.ContactPhotoFactory;
 import org.thoughtcrime.securesms.contacts.ContactsInfoDatabase;
 import org.thoughtcrime.securesms.database.ThreadDatabase;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
+import android.text.TextUtils;
 import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.recipients.RecipientFactory;
 import org.thoughtcrime.securesms.recipients.Recipients;
@@ -25,6 +31,8 @@ import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.push.ContactsInfo;
 import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.util.InvalidNumberException;
+import android.content.ContentValues;
+import java.lang.String;
 
 //import android.widget.Toast;
 
@@ -91,23 +99,50 @@ public class RecipientInoActivity extends PassphraseRequiredSherlockFragmentActi
 
     private void getPersonalInfo() {
         Cursor cursor = null;
-        String phoneNumber = null;
-
+        String number = null;
+        String phoneNumber=null;
         //String localNumber = TextSecurePreferences.getLocalNumber(this);
-        phoneNumber = recipients.getPrimaryRecipient().getNumber();
-        RecipientInfoTask infoTask = new RecipientInfoTask();
-        infoTask.execute(phoneNumber);
-        cursor = ContactsInfoDatabase.getInstance(this).query(phoneNumber);
-        //Log.d("RecipientInoActivity",cursor== null ? "": "not null");
-
-        if (cursor != null && cursor.moveToFirst()) {
-            byte[] avatar = cursor.getBlob(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AVATAR_COLUMN));
-            initAvatar(avatar);
-        }
-
-        if (cursor != null) {
-            cursor.close();
+        try {
+            String localNumber = TextSecurePreferences.getLocalNumber(this);
+            number = recipients.getPrimaryRecipient().getNumber();
+            if (!TextUtils.isEmpty(localNumber)) {
+                phoneNumber = PhoneNumberFormatter.formatNumber(number, localNumber);
             }
+            cursor = ContactsInfoDatabase.getInstance(this).query(phoneNumber);
+            Log.d("RecipientInoActivity",cursor== null ? "": "not null");
+
+            if (cursor != null && cursor.moveToFirst()) {
+                byte[] avatar = cursor.getBlob(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AVATAR_COLUMN));
+                initAvatar(avatar);
+                String gender = cursor.getString(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.GENDER_COLUMN));
+                String age = cursor.getString(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.AGE_COLUMN));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.NAME_COLUMN));
+                String sign = cursor.getString(cursor.getColumnIndexOrThrow(ContactsInfoDatabase.SIGNATURE_COLUMN));
+
+                if (gender == null) {
+                    genderTextview.setText("");
+                } else {
+                    if (gender.equals("1")) {
+                        genderTextview.setText(getString(R.string.personal_info_gender_male));
+                    } else {
+                        genderTextview.setText(getString(R.string.personal_info_gender_female));
+                    }
+                }
+
+                ageTextview.setText(age == null ? "" : String.valueOf(age));
+                nameTextview.setText(name == null ? "" : name);
+                signatureTextview.setText(sign == null ? "" : sign);
+            }
+
+            RecipientInfoTask infoTask = new RecipientInfoTask();
+            infoTask.execute(phoneNumber);
+        } catch (InvalidNumberException e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
     }
 
     private void initAvatar(byte[] avatar) {
@@ -120,23 +155,43 @@ public class RecipientInoActivity extends PassphraseRequiredSherlockFragmentActi
         }
 
         imageView.setImageBitmap(BitmapUtil.getCircleCroppedBitmap(bitmap));
-
-        /*if (null != bitmap) {
-            bitmap = null;
-        }*/
     }
 
     private class RecipientInfoTask extends AsyncTask<String, Integer, ContactsInfo> {
+        private String phoneNumber = null;
+        private Bitmap bitmap=null;
+        PushServiceSocket socket = PushServiceSocketFactory.create(RecipientInoActivity.this);;
+        FileInputStream fileInputStream = null;
+
         @Override
         protected ContactsInfo doInBackground(String... params) {
-            PushServiceSocket socket = PushServiceSocketFactory.create(RecipientInoActivity.this);
+            this.phoneNumber = params[0];
             ContactsInfo contactsInfo = null;
 
             try {
-                contactsInfo = ContactPhotoFactory.getContactsInfo(RecipientInoActivity.this, socket, params[0]);
+                contactsInfo = ContactPhotoFactory.getContactsInfo(RecipientInoActivity.this, socket, phoneNumber);
+
+                if (contactsInfo != null && contactsInfo.getImageattachmentid() != null) {
+                    File avatar = socket.retrieveAttachment(null, contactsInfo.getImageattachmentid());
+                    if (avatar.exists() && avatar.length() > 0) {
+                        fileInputStream = new FileInputStream(avatar);
+                        bitmap = BitmapFactory.decodeStream(fileInputStream);
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                Log.d("RecipientInoActivity", e.getMessage());
+            } catch (IOException e) {
+                Log.d("RecipientInoActivity", e.getMessage());
             } catch (InvalidNumberException e) {
                 Log.d("RecipientInoActivity", e.getMessage());
             } finally {
+                if (fileInputStream != null) {
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                        Log.d("ContactPhotoFactory", e.getMessage());
+                    }
+                }
             }
             return contactsInfo;
         }
@@ -145,10 +200,23 @@ public class RecipientInoActivity extends PassphraseRequiredSherlockFragmentActi
         protected void onPostExecute(ContactsInfo contractInfo) {
             //super.onPostExecute(result);
             if (null != contractInfo) {
-                genderTextview.setText(contractInfo.getGender() == true ? "男" : "女");
+                genderTextview.setText(contractInfo.getGender() == true ? getString(R.string.personal_info_gender_male) : getString(R.string.personal_info_gender_female));
                 ageTextview.setText(String.valueOf(contractInfo.getAge()));
                 nameTextview.setText(contractInfo.getNickname());
                 signatureTextview.setText(contractInfo.getSign());
+
+                ContentValues values = new ContentValues();
+
+                if (bitmap!=null)
+                {
+                    values.put(ContactsInfoDatabase.AVATAR_COLUMN, BitmapUtil.toByteArray(bitmap));
+                }
+
+                values.put(ContactsInfoDatabase.GENDER_COLUMN, contractInfo.getGender());
+                values.put(ContactsInfoDatabase.AGE_COLUMN, contractInfo.getAge());
+                values.put(ContactsInfoDatabase.NAME_COLUMN, contractInfo.getNickname());
+                values.put(ContactsInfoDatabase.SIGNATURE_COLUMN, contractInfo.getSign());
+                ContactsInfoDatabase.getInstance(RecipientInoActivity.this).updateContactInfo(values, phoneNumber);
             }
         }
     }

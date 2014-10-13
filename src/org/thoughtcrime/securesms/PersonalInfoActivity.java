@@ -58,9 +58,9 @@ public class PersonalInfoActivity extends PreferenceActivity {
                 new InputFilter.LengthFilter(5)
         });
 
-       /* mSignPreference.getEditText().setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(140)
-        });*/
+        mSignPreference.getEditText().setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(11)
+        });
     }
     private class OnGenderSharedPreferenceChangeListener implements Preference.OnPreferenceChangeListener {
         @Override
