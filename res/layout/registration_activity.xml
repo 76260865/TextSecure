@@ -39,9 +39,11 @@
                   android:textAllCaps="true"
                   android:text="@string/registration_activity__your_country_code_and_phone_number" />
 
-        <LinearLayout android:orientation="horizontal"
-                      android:layout_width="fill_parent"
-                      android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dip"
+            android:orientation="horizontal">
 
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
@@ -68,6 +70,36 @@
 
         </LinearLayout>
 
+        <TextView style="@style/Registration.Label"
+            android:layout_width="fill_parent"
+            android:textAllCaps="true"
+            android:visibility="gone"
+            android:text="@string/registration_activity__your_verification_code" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/verification_code"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:gravity="center"
+                android:hint="@string/registration_activity_verification_code"
+                android:inputType="numberSigned"
+                android:maxLength="6"
+                android:singleLine="true" />
+
+            <Button
+                android:id="@+id/codeButton"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:text="@string/registration_activity_verification_code_obtain"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
         <LinearLayout android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:layout_marginTop="16dip"

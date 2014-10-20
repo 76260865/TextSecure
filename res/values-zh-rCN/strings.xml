@@ -194,6 +194,8 @@
 国家代码</string>
   <string name="RegistrationActivity_you_must_specify_your_phone_number">您必须指定您的
 电话号码</string>
+  <string name="RegistrationActivity_you_must_specify_your_verifacation_code">您必须指定您的
+验证码</string>
   <string name="RegistrationActivity_invalid_number">号码无效</string>
   <string name="RegistrationActivity_the_number_you_specified_s_is_invalid">您所指定的号码
 (%s) 无效。</string>
@@ -453,7 +455,10 @@
   <string name="registration_activity__your_country">国家或地区</string>
   <string name="registration_activity__your_country_code_and_phone_number">您的国家代码和
 电话号码</string>
+  <string name="registration_activity__your_verification_code">您的验证码</string>
   <string name="registration_activity__phone_number">电话号码</string>
+  <string name="registration_activity_verification_code">验证码</string>
+  <string name="registration_activity_verification_code_obtain">获取验证码</string>
   <string name="registration_activity__register">注册人</string>
   <string name="registration_activity__registration_will_transmit_some_contact_information_to_the_server_temporariliy">注册过程将会发送一些临时性的联系信息到服务器。</string>
   <string name="registration_activity__skip">略过</string>
