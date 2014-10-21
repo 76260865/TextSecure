@@ -311,7 +311,7 @@
   <string name="KeyCachingService_lock">使用密码锁定</string>
   <!--MessageNotifier-->
   <string name="MessageNotifier_d_new_messages">%d 新信息</string>
-  <string name="MessageNotifier_most_recent_from_s">最新邮件来自：%s</string>
+  <string name="MessageNotifier_most_recent_from_s">最新消息来自：%s</string>
   <string name="MessageNotifier_encrypted_message">加密信息...</string>
   <string name="MessageNotifier_no_subject">（无主题）</string>
   <string name="MessageNotifier_message_delivery_failed">信息发送失败。</string>
