@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +48,9 @@ public class RegistrationActivity extends SherlockActivity {
   private Spinner              countrySpinner;
   private TextView             countryCode;
   private TextView             number;
+  private EditText             verificationCode;
   private Button               createButton;
+  private Button               codeButton;
   private Button               skipButton;
 
   private MasterSecret masterSecret;
@@ -78,11 +81,14 @@ public class RegistrationActivity extends SherlockActivity {
     this.countrySpinner = (Spinner)findViewById(R.id.country_spinner);
     this.countryCode    = (TextView)findViewById(R.id.country_code);
     this.number         = (TextView)findViewById(R.id.number);
+    this.verificationCode = (EditText) findViewById(R.id.verification_code);
+    this.codeButton=(Button)findViewById(R.id.codeButton);
     this.createButton   = (Button)findViewById(R.id.registerButton);
     this.skipButton     = (Button)findViewById(R.id.skipButton);
 
     this.countryCode.addTextChangedListener(new CountryCodeChangedListener());
     this.number.addTextChangedListener(new NumberChangedListener());
+    this.codeButton.setOnClickListener(null);
     this.createButton.setOnClickListener(new CreateButtonListener());
     this.skipButton.setOnClickListener(new CancelButtonListener());
   }
@@ -168,6 +174,13 @@ public class RegistrationActivity extends SherlockActivity {
                        Toast.LENGTH_LONG).show();
         return;
       }
+
+       /* if (Util.isEmpty(verificationCode.getText())) {
+            Toast.makeText(self,
+                    getString(R.string.RegistrationActivity_you_must_specify_your_verifacation_code),
+                    Toast.LENGTH_LONG).show();
+            return;
+        }*/
 
       final String e164number = getConfiguredE164Number();
 
