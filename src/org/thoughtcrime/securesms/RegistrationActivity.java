@@ -5,8 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -29,9 +31,21 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import org.thoughtcrime.securesms.util.Dialogs;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.textsecure.crypto.MasterSecret;
+import org.whispersystems.textsecure.push.PushServiceSocket;
+import org.whispersystems.textsecure.util.InvalidNumberException;
 import org.whispersystems.textsecure.util.PhoneNumberFormatter;
 import org.whispersystems.textsecure.util.Util;
+import android.os.AsyncTask;
+import org.whispersystems.textsecure.push.PushServiceSocket;
+import org.whispersystems.textsecure.push.PushServiceSocket.StatusModel;
+import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
+import org.whispersystems.textsecure.util.Util;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import org.whispersystems.textsecure.util.PhoneNumberFormatter;
 /**
  * The register account activity.  Prompts ths user for their registration information
  * and begins the account registration process.
@@ -88,7 +102,7 @@ public class RegistrationActivity extends SherlockActivity {
 
     this.countryCode.addTextChangedListener(new CountryCodeChangedListener());
     this.number.addTextChangedListener(new NumberChangedListener());
-    this.codeButton.setOnClickListener(null);
+    this.codeButton.setOnClickListener(new CodeButtonListener());
     this.createButton.setOnClickListener(new CreateButtonListener());
     this.skipButton.setOnClickListener(new CancelButtonListener());
   }
@@ -154,6 +168,74 @@ public class RegistrationActivity extends SherlockActivity {
                                            number.getText().toString());
   }
 
+    private class CodeButtonListener implements View.OnClickListener {
+        private String phoneNumber = null;
+        private TimeCount timer = new TimeCount(60000, 1000);
+
+        @Override
+        public void onClick(View v) {
+
+            final String e164number = getConfiguredE164Number();
+
+            if (Util.isEmpty(number.getText())) {
+                Toast.makeText(RegistrationActivity.this,
+                        getString(R.string.RegistrationActivity_you_must_specify_your_phone_number),
+                        Toast.LENGTH_LONG).show();
+                return;
+            } else {
+                if (!PhoneNumberFormatter.isValidNumber(e164number)) {
+                    Dialogs.showAlertDialog(RegistrationActivity.this,
+                            getString(R.string.RegistrationActivity_invalid_number),
+                            String.format(getString(R.string.RegistrationActivity_the_number_you_specified_s_is_invalid),
+                                    e164number));
+                    return;
+                } else {
+                    this.timer.start();
+                }
+            }
+
+            new AsyncTask<Void, Void, StatusModel>() {
+
+                @Override
+                protected StatusModel doInBackground(Void... params) {
+                    PushServiceSocket socket = PushServiceSocketFactory.create(RegistrationActivity.this);
+                    return socket.requestVerificationCode(e164number);
+                }
+
+                @Override
+                protected void onPostExecute(StatusModel result) {
+                    if (result != null) {
+                        if (result.geCode() == 0) {
+                            Toast.makeText(RegistrationActivity.this,
+                                    getString(R.string.RegistrationActivity_verification_code_verify_success),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                    }
+                }
+            }.execute();
+        }
+    }
+
+    private class TimeCount extends CountDownTimer
+    {
+        public TimeCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onFinish() {
+            codeButton.setEnabled(true);
+            codeButton.setText(getString(R.string.registration_activity_verification_code_obtain));
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            codeButton.setEnabled(false);
+            codeButton.setText(getString(R.string.RegistrationActivity_verification_code_obtain_again)+"("+millisUntilFinished/1000+"s)");
+        }
+    }
+
   private class CreateButtonListener implements View.OnClickListener {
     @Override
     public void onClick(View v) {
@@ -174,6 +256,14 @@ public class RegistrationActivity extends SherlockActivity {
                        Toast.LENGTH_LONG).show();
         return;
       }
+
+        final String code = verificationCode.getText().toString();
+        if (Util.isEmpty(code)) {
+                Toast.makeText(self,
+                        getString(R.string.RegistrationActivity_you_must_specify_your_verifacation_code),
+                        Toast.LENGTH_LONG).show();
+                return;
+        }
 
        /* if (Util.isEmpty(verificationCode.getText())) {
             Toast.makeText(self,
@@ -213,6 +303,7 @@ public class RegistrationActivity extends SherlockActivity {
                                  public void onClick(DialogInterface dialog, int which) {
                                    Intent intent = new Intent(self, RegistrationProgressActivity.class);
                                    intent.putExtra("e164number", e164number);
+                                   intent.putExtra("verify_code",code);
                                    intent.putExtra("master_secret", masterSecret);
                                    startActivity(intent);
                                    finish();

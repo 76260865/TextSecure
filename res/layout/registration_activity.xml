@@ -78,15 +78,13 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone">
+            android:layout_height="wrap_content">
 
             <EditText
                 android:id="@+id/verification_code"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:enabled="false"
                 android:gravity="center"
                 android:hint="@string/registration_activity_verification_code"
                 android:inputType="numberSigned"
@@ -95,7 +93,7 @@
 
             <Button
                 android:id="@+id/codeButton"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/registration_activity_verification_code_obtain"
                 android:textAppearance="?android:attr/textAppearanceMedium" />

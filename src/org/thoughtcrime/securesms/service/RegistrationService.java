@@ -30,6 +30,7 @@ import org.whispersystems.textsecure.crypto.IdentityKey;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.crypto.PreKeyUtil;
 import org.whispersystems.textsecure.directory.Directory;
+import org.whispersystems.textsecure.push.AuthorizationFailedException;
 import org.whispersystems.textsecure.push.ExpectationFailedException;
 import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.storage.PreKeyRecord;
@@ -221,6 +222,7 @@ public class RegistrationService extends Service {
     markAsVerifying(true);
 
     String       number       = intent.getStringExtra("e164number");
+    String code=intent.getStringExtra("verify_code");
     MasterSecret masterSecret = intent.getParcelableExtra("master_secret");
     int          registrationId = TextSecurePreferences.getLocalRegistrationId(this);
 
@@ -243,7 +245,7 @@ public class RegistrationService extends Service {
 //      String challenge = waitForChallenge();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         challenge = prefs.getString("clientid", null);
-      socket.verifyAccount(challenge, signalingKey, true, registrationId);
+        socket.verifyAccount(code, challenge, signalingKey, true, registrationId);
 
       handleCommonRegistration(masterSecret, socket, number);
       markAsVerified(number, password, signalingKey);
@@ -258,11 +260,11 @@ public class RegistrationService extends Service {
       Log.w("RegistrationService", uoe);
       setState(new RegistrationState(RegistrationState.STATE_GCM_UNSUPPORTED, number));
       broadcastComplete(false);
-    } /*catch (AccountVerificationTimeoutException avte) {
-      Log.w("RegistrationService", avte);
+    } catch (AuthorizationFailedException afx) {
+      Log.w("RegistrationService", afx);
       setState(new RegistrationState(RegistrationState.STATE_TIMEOUT, number));
       broadcastComplete(false);
-    } */catch (IOException e) {
+    } catch (IOException e) {
       Log.w("RegistrationService", e);
       setState(new RegistrationState(RegistrationState.STATE_NETWORK_ERROR, number));
       broadcastComplete(false);

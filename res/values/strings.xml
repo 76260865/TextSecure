@@ -873,4 +873,14 @@
     <string name="personal_info_activity__choose_image">Choose Image</string>
     <string name="preference_person_info_category">Personal Info</string>
     <string name="preference_person_info_setting">Personal Info Setting</string>
+
+    <string name="personal_info_gender_male">male</string>
+    <string name="personal_info_gender_female">female</string>
+
+    <string name="recipient_info_avatar">choose image</string>
+    <string name="recipient_info_gender">sex： </string>
+    <string name="recipient_info_age">age： </string>
+    <string name="recipient_info_name">name： </string>
+    <string name="recipient_info_signature">signature： </string>
+    <string name="recipient_info_send_msg_btn">send message</string>
 </resources>

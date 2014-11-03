@@ -87,6 +87,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
   private EditText    codeEditText;
 
   private MasterSecret masterSecret;
+  private String verifyCode;
   private volatile boolean visible;
 
   @Override
@@ -130,6 +131,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
 
   private void initializeResources() {
     this.masterSecret              = getIntent().getParcelableExtra("master_secret");
+    this.verifyCode = getIntent().getStringExtra("verify_code");
     this.registrationLayout        = (LinearLayout)findViewById(R.id.registering_layout);
     this.verificationFailureLayout = (LinearLayout)findViewById(R.id.verification_failure_layout);
     this.connectivityFailureLayout = (LinearLayout)findViewById(R.id.connectivity_failure_layout);
@@ -195,6 +197,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
     if (hasNumberDirective()) {
       Intent intent = new Intent(this, RegistrationService.class);
       intent.setAction(RegistrationService.REGISTER_NUMBER_ACTION);
+        intent.putExtra("verify_code", verifyCode);
       intent.putExtra("e164number", getNumberDirective());
       intent.putExtra("master_secret", masterSecret);
       startService(intent);
@@ -222,7 +225,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
     this.verificationText.setTextColor(UNFOCUSED_COLOR);
     this.generatingKeysText.setTextColor(UNFOCUSED_COLOR);
     this.gcmRegistrationText.setTextColor(UNFOCUSED_COLOR);
-    this.timeoutProgressLayout.setVisibility(View.VISIBLE);
+    //this.timeoutProgressLayout.setVisibility(View.VISIBLE);
   }
 
   private void handleStateVerifying() {
@@ -242,7 +245,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
     this.generatingKeysText.setTextColor(UNFOCUSED_COLOR);
     this.gcmRegistrationText.setTextColor(UNFOCUSED_COLOR);
     this.registrationProgress.setVisibility(View.VISIBLE);
-    this.timeoutProgressLayout.setVisibility(View.VISIBLE);
+    //this.timeoutProgressLayout.setVisibility(View.VISIBLE);
   }
 
   private void handleStateGeneratingKeys() {
@@ -262,7 +265,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
     this.generatingKeysText.setTextColor(FOCUSED_COLOR);
     this.gcmRegistrationText.setTextColor(UNFOCUSED_COLOR);
     this.registrationProgress.setVisibility(View.INVISIBLE);
-    this.timeoutProgressLayout.setVisibility(View.INVISIBLE);
+    //this.timeoutProgressLayout.setVisibility(View.INVISIBLE);
   }
 
   private void handleStateGcmRegistering() {
@@ -282,7 +285,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
     this.generatingKeysText.setTextColor(UNFOCUSED_COLOR);
     this.gcmRegistrationText.setTextColor(FOCUSED_COLOR);
     this.registrationProgress.setVisibility(View.INVISIBLE);
-    this.timeoutProgressLayout.setVisibility(View.INVISIBLE);
+    //this.timeoutProgressLayout.setVisibility(View.INVISIBLE);
   }
 
   private void handleGcmTimeout(RegistrationState state) {
@@ -516,7 +519,7 @@ public class RegistrationProgressActivity extends SherlockActivity {
           try {
             PushServiceSocket socket = PushServiceSocketFactory.create(context, e164number, password);
             int registrationId = TextSecurePreferences.getLocalRegistrationId(context);
-            socket.verifyAccount(code, signalingKey, true, registrationId);
+            socket.verifyAccount(verifyCode,code, signalingKey, true, registrationId);
             return SUCCESS;
           } catch (ExpectationFailedException e) {
             Log.w("RegistrationProgressActivity", e);
