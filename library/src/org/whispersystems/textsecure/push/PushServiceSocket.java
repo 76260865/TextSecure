@@ -21,6 +21,7 @@ import android.util.Log;
 
 import com.google.thoughtcrimegson.Gson;
 import com.google.thoughtcrimegson.JsonParseException;
+import com.google.thoughtcrimegson.annotations.SerializedName;
 
 import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.whispersystems.libaxolotl.IdentityKey;
@@ -45,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -76,7 +78,7 @@ public class PushServiceSocket {
 
   private static final String CREATE_ACCOUNT_SMS_PATH   = "/v1/accounts/sms/code/%s";
   private static final String CREATE_ACCOUNT_VOICE_PATH = "/v1/accounts/voice/code/%s";
-  private static final String VERIFY_ACCOUNT_PATH       = "/v1/accounts/code/%s";
+  private static final String VERIFY_ACCOUNT_PATH       = "/v1/accounts/code/%s/%s";
   private static final String REGISTER_GCM_PATH         = "/v1/accounts/gcm/";
   private static final String PREKEY_METADATA_PATH      = "/v2/keys/";
   private static final String PREKEY_PATH               = "/v2/keys/%s";
@@ -95,7 +97,7 @@ public class PushServiceSocket {
 
     private static final String UPLOAD_CONTACTS_INFO_PATH = "/v1/accounts/code/saveorupdate/%s";
     private static final String GET_CONTACTS_INFO_PATH = "/v1/accounts/code/get/%s";
-
+    private static final String VERIFICATION_CODE_PATH = "/v1/accounts/reg/code/send/%s";
   private static final boolean ENFORCE_SSL = true;
 
   private final Context        context;
@@ -121,13 +123,25 @@ public class PushServiceSocket {
     makeRequest(String.format(path, localNumber), "GET", null);
   }
 
-  public void verifyAccount(String verificationCode, String signalingKey,
+    public StatusModel requestVerificationCode(String phoneNumber) {
+        try {
+            String response = makeRequest(String.format(VERIFICATION_CODE_PATH, phoneNumber), "GET", null);
+            StatusModel codeStatus = new Gson().fromJson(response, StatusModel.class);
+            return codeStatus;
+        } catch (IOException ioe) {
+            Log.w("PushServiceSocket", ioe);
+        }
+        return null;
+    }
+
+  //add verification code verify by Real.J.Tian 29/10/2014
+  public void verifyAccount(String code,String verificationCode, String signalingKey,
                             boolean supportsSms, int registrationId)
       throws IOException
   {
     AccountAttributes signalingKeyEntity = new AccountAttributes(signalingKey, supportsSms, registrationId);
-    makeRequest(String.format(VERIFY_ACCOUNT_PATH, verificationCode),
-                "PUT", new Gson().toJson(signalingKeyEntity));
+      makeRequest(String.format(VERIFY_ACCOUNT_PATH, code, verificationCode),
+              "PUT", new Gson().toJson(signalingKeyEntity));
   }
 
   public void sendReceipt(String destination, long messageId, String relay) throws IOException {
@@ -696,4 +710,17 @@ public class PushServiceSocket {
         }
     }
 
+    public static class StatusModel
+    {
+        //@SerializedName("code")
+        private int code;
+
+        public int geCode() {
+            return code;
+        }
+
+        public void setCode(int status) {
+            this.code = status;
+        }
+    }
 }

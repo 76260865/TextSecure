@@ -200,6 +200,8 @@
   <string name="RegistrationActivity_invalid_number">号码无效</string>
   <string name="RegistrationActivity_the_number_you_specified_s_is_invalid">您所指定的号码
 (%s) 无效。</string>
+    <string name="RegistrationActivity_verification_code_verify_success">验证码发送成功！</string>
+    <string name="RegistrationActivity_verification_code_obtain_again">重新获取验证码</string>
   <string name="RegistrationActivity_unsupported">不支持</string>
   <string name="RegistrationActivity_sorry_this_device_is_not_supported_for_data_messaging">抱歉，
 当前设备不支持数据短信息。该设备运行的Android版本低于
@@ -459,7 +461,7 @@
   <string name="registration_activity__your_verification_code">您的验证码</string>
   <string name="registration_activity__phone_number">电话号码</string>
   <string name="registration_activity_verification_code">验证码</string>
-  <string name="registration_activity_verification_code_obtain">获取验证码</string>
+  <string name="registration_activity_verification_code_obtain">验证</string>
   <string name="registration_activity__register">注册人</string>
   <string name="registration_activity__registration_will_transmit_some_contact_information_to_the_server_temporariliy">注册过程将会发送一些临时性的联系信息到服务器。</string>
   <string name="registration_activity__skip">略过</string>

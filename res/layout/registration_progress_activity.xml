@@ -58,6 +58,18 @@
                         android:paddingLeft="4dip"
                         android:paddingRight="4dip"
                         android:text="@string/registration_progress_activity__textsecure_timed_out_while_waiting_for_a_verification_sms_message" />
+
+                <Button
+                    android:id="@+id/verification_failure_edit_button"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dip"
+                    android:layout_marginBottom="10.0dip"
+                    android:gravity="center"
+                    android:text="@string/registration_progress_activity__edit_number"
+                    android:textStyle="bold"
+                    android:layout_below="@id/sms_failed_text"/>
             </RelativeLayout>
 
 
@@ -65,6 +77,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="10dip"
+                            android:visibility="gone"
                             android:background="@drawable/background_pane">
 
                 <ImageView android:id="@+id/telephone"
@@ -129,7 +142,6 @@
                         android:text="@string/registration_progress_activity__call_me"/>
 
                 <Button
-                        android:id="@+id/verification_failure_edit_button"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -490,6 +502,7 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dip"
+                    android:visibility="gone"
                     android:layout_weight="1.0" >
 
                 <TextView
