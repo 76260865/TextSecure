@@ -26,13 +26,15 @@ import org.thoughtcrime.securesms.preferences.TextItemPreference;
 import org.thoughtcrime.securesms.push.PushServiceSocketFactory;
 import org.thoughtcrime.securesms.util.DirectoryHelper;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
-import org.whispersystems.textsecure.crypto.IdentityKey;
+import org.whispersystems.libaxolotl.IdentityKeyPair;
+import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
+import org.whispersystems.libaxolotl.state.PreKeyRecord;
+import org.whispersystems.libaxolotl.util.KeyHelper;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.crypto.PreKeyUtil;
 import org.whispersystems.textsecure.directory.Directory;
-import org.whispersystems.textsecure.push.ExpectationFailedException;
 import org.whispersystems.textsecure.push.PushServiceSocket;
-import org.whispersystems.textsecure.storage.PreKeyRecord;
+import org.whispersystems.textsecure.push.exceptions.ExpectationFailedException;
 import org.whispersystems.textsecure.util.Util;
 
 import java.io.IOException;
@@ -225,7 +227,7 @@ public class RegistrationService extends Service {
     int          registrationId = TextSecurePreferences.getLocalRegistrationId(this);
 
     if (registrationId == 0) {
-      registrationId = Util.generateRegistrationId();
+      registrationId = KeyHelper.generateRegistrationId(false);
       TextSecurePreferences.setLocalRegistrationId(this, registrationId);
     }
 
@@ -275,10 +277,11 @@ public class RegistrationService extends Service {
       throws IOException
   {
     setState(new RegistrationState(RegistrationState.STATE_GENERATING_KEYS, number));
-    IdentityKey        identityKey = IdentityKeyUtil.getIdentityKey(this);
-    List<PreKeyRecord> records     = PreKeyUtil.generatePreKeys(this, masterSecret);
-    PreKeyRecord       lastResort  = PreKeyUtil.generateLastResortKey(this, masterSecret);
-    socket.registerPreKeys(identityKey, lastResort, records);
+    IdentityKeyPair    identityKey  = IdentityKeyUtil.getIdentityKeyPair(this, masterSecret);
+    List<PreKeyRecord> records      = PreKeyUtil.generatePreKeys(this, masterSecret);
+    PreKeyRecord       lastResort   = PreKeyUtil.generateLastResortKey(this, masterSecret);
+    SignedPreKeyRecord signedPreKey = PreKeyUtil.generateSignedPreKey(this, masterSecret, identityKey);
+    socket.registerPreKeys(identityKey.getPublicKey(), lastResort, signedPreKey, records);
 
     setState(new RegistrationState(RegistrationState.STATE_GCM_REGISTERING, number));
 
@@ -327,6 +330,7 @@ public class RegistrationService extends Service {
     TextSecurePreferences.setLocalNumber(this, number);
     TextSecurePreferences.setPushServerPassword(this, password);
     TextSecurePreferences.setSignalingKey(this, signalingKey);
+    TextSecurePreferences.setSignedPreKeyRegistered(this, true);
   }
 
   private void setState(RegistrationState state) {

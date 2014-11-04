@@ -1,6 +1,8 @@
 buildscript {
     repositories {
-        mavenCentral()
+        maven {
+            url "https://repo1.maven.org/maven2"
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.2'
@@ -12,7 +14,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'witness'
 
 repositories {
-    mavenCentral()
+    maven {
+        url "https://repo1.maven.org/maven2"
+    }
     maven {
         url "https://raw.github.com/whispersystems/maven/master/gcm-client/releases/"
     }
@@ -34,26 +38,32 @@ dependencies {
     compile 'com.google.android.gms:play-services:+'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'org.w3c:smil:1.0.0'
-    compile 'com.github.chrisbanes.photoview:library:1.2.2'
 
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5'
+    compile 'com.github.chrisbanes.photoview:library:1.2.2'
     androidTestCompile 'com.squareup:fest-android:1.0.8'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.1'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
 
     compile project(':library')
+    compile project(':jobqueue')
     compile files('libs/GetuiExt-1.2.2.jar')
     compile files('libs/GetuiSdk2.2.5.9.jar')
-    compile files('libs/json_simple-1.1.jar')
-}
+    compile files('libs/json_simple-1.1.jar')}
 
 dependencyVerification {
     verify = [
-        'com.actionbarsherlock:actionbarsherlock:5ab04d74101f70024b222e3ff9c87bee151ec43331b4a2134b6cc08cf8565819',
-        'com.android.support:support-v4:81f2b1c2c94efd5a4ec7fcd97b6cdcd00e87a933905c5c86103c7319eb024572',
-        'se.emilsjolander:stickylistheaders:89146b46c96fea0e40200474a2625cda10fe94891e4128f53cdb42375091b9b6',
-        'com.astuetz:pagerslidingtabstrip:f1641396732c7132a7abb837e482e5ee2b0ebb8d10813fc52bbaec2c15c184c2',
-        'org.w3c:smil:085dc40f2bb249651578bfa07499fd08b16ad0886dbe2c4078586a408da62f9b',
-        'com.madgag:sc-light-jdk15on:931f39d351429fb96c2f749e7ecb1a256a8ebbf5edca7995c9cc085b94d1841d',
-        'com.googlecode.libphonenumber:libphonenumber:eba17eae81dd622ea89a00a3a8c025b2f25d342e0d9644c5b62e16f15687c3ab',
-        'org.whispersystems:gson:08f4f7498455d1539c9233e5aac18e9b1805815ef29221572996508eb512fe51',
+            'com.actionbarsherlock:actionbarsherlock:5ab04d74101f70024b222e3ff9c87bee151ec43331b4a2134b6cc08cf8565819',
+            'com.android.support:support-v4:81f2b1c2c94efd5a4ec7fcd97b6cdcd00e87a933905c5c86103c7319eb024572',
+            'se.emilsjolander:stickylistheaders:89146b46c96fea0e40200474a2625cda10fe94891e4128f53cdb42375091b9b6',
+            'com.astuetz:pagerslidingtabstrip:f1641396732c7132a7abb837e482e5ee2b0ebb8d10813fc52bbaec2c15c184c2',
+            'org.w3c:smil:085dc40f2bb249651578bfa07499fd08b16ad0886dbe2c4078586a408da62f9b',
+            'org.apache.httpcomponents:httpclient-android:6f56466a9bd0d42934b90bfbfe9977a8b654c058bf44a12bdc2877c4e1f033f1',
+            'com.android.support:support-annotations:1aa96ef0cc4a445bfc2f93ccf762305bc57fa107b12afe9d11f3863ae8a11036',
+            'com.google.protobuf:protobuf-java:e0c1c64575c005601725e7c6a02cebf9e1285e888f756b2a1d73ffa8d725cc74',
+            'com.madgag:sc-light-jdk15on:931f39d351429fb96c2f749e7ecb1a256a8ebbf5edca7995c9cc085b94d1841d',
+            'com.googlecode.libphonenumber:libphonenumber:eba17eae81dd622ea89a00a3a8c025b2f25d342e0d9644c5b62e16f15687c3ab',
+            'org.whispersystems:gson:08f4f7498455d1539c9233e5aac18e9b1805815ef29221572996508eb512fe51',
     ]
 }
 
@@ -64,6 +74,11 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     android {
@@ -78,10 +93,10 @@ android {
                 assets.srcDirs = ['assets']
             }
             androidTest {
-                java.srcDirs = ['androidTest']
-                resources.srcDirs = ['androidTest']
-                aidl.srcDirs = ['androidTest']
-                renderscript.srcDirs = ['androidTest']
+                java.srcDirs = ['androidTest/java']
+                resources.srcDirs = ['androidTest/java']
+                aidl.srcDirs = ['androidTest/java']
+                renderscript.srcDirs = ['androidTest/java']
             }
         }
     }
@@ -102,14 +117,41 @@ android {
         }
     }
 
-     lintOptions {
+    lintOptions {
         abortOnError false
     }
-
     productFlavors {
         universal {
             packageName = 'com.raycom.securesms'
         }
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name.equals("lint")) {
+        task.enabled = false
+    }
+}
+
+def Properties props = new Properties()
+def propFile = new File('signing.properties')
+
+if (propFile.canRead()){
+    props.load(new FileInputStream(propFile))
+
+    if (props !=null &&
+        props.containsKey('STORE_FILE')     &&
+        props.containsKey('STORE_PASSWORD') &&
+        props.containsKey('KEY_ALIAS')      &&
+        props.containsKey('KEY_PASSWORD'))
+    {
+        android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+        android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        println 'signing.properties found but some entries are missing'
+        android.buildTypes.release.signingConfig = null
     }
 }
 

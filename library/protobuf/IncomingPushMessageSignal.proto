@@ -10,7 +10,8 @@ message IncomingPushMessageSignal {
     KEY_EXCHANGE  = 2;
     PREKEY_BUNDLE = 3;
     PLAINTEXT     = 4;
-    UPDATE_USER_INFO = 5;
+    RECEIPT       = 5;
+    UPDATE_USER_INFO = 6;
   }
   optional Type   type         = 1;
   optional string source       = 2;
