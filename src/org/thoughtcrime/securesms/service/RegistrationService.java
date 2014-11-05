@@ -33,6 +33,8 @@ import org.whispersystems.libaxolotl.util.KeyHelper;
 import org.whispersystems.textsecure.crypto.MasterSecret;
 import org.whispersystems.textsecure.crypto.PreKeyUtil;
 import org.whispersystems.textsecure.directory.Directory;
+import org.whispersystems.textsecure.push.AuthorizationFailedException;
+import org.whispersystems.textsecure.push.ExpectationFailedException;
 import org.whispersystems.textsecure.push.PushServiceSocket;
 import org.whispersystems.textsecure.push.exceptions.AuthorizationFailedException;
 import org.whispersystems.textsecure.push.exceptions.ExpectationFailedException;
